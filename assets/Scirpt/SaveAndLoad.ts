@@ -1,5 +1,5 @@
 import { _decorator, Component, sys, warn } from "cc";
-import { Singleton } from "../Model/Singleton";
+import BaseSingleton from "../Model/Singleton/BaseSingleton";
 const { ccclass, property } = _decorator;
 
 const coinKey: string = "gold";
@@ -9,10 +9,17 @@ interface UserData {
   name: string;
   level: number;
   gold: number;
+  exp: number;
+  str: string;
+  vit: string;
+  dex: string;
+  int: string;
+  agi: string;
+  lux: string;
 }
 
 @ccclass("SaveAndLoad")
-export class SaveAndLoad extends Singleton<SaveAndLoad> {
+export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
   start() {
     this.saveCoin(100);
     this.loadCoin();
@@ -42,6 +49,6 @@ export class SaveAndLoad extends Singleton<SaveAndLoad> {
     const jsonStr = sys.localStorage.getItem(userDataKey);
     const userData = JSON.parse(jsonStr) as UserData;
     warn(userData);
-    return userData
+    return userData;
   }
 }
