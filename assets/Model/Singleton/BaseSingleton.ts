@@ -1,3 +1,4 @@
+import { Component } from "cc";
 import IBaseSingleton from "./IBaseSingleton";
 import SingletManager from "./SingletonManger";
 

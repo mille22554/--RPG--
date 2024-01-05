@@ -1,115 +1,54 @@
-import { _decorator, Component, EditBox, find, Label, Node, warn } from "cc";
-import { SaveAndLoad } from "./SaveAndLoad";
-import BaseSingleton from "../Model/Singleton/BaseSingleton";
+import { _decorator, Label, Node, warn } from "cc";
+import { SaveAndLoad, UserData } from "./SaveAndLoad";
+import BaseSingletonComponent from "../Model/Singleton/BaseSingletonComponent";
 const { ccclass, property } = _decorator;
-
 @ccclass("CharactorPage")
-export class CharactorPage extends BaseSingleton<CharactorPage>() {
-  @property(Label)
-  labelUserName: Label;
-  @property(Label)
-  labelUserLevel: Label;
-  @property(Label)
-  labelUserGold: Label;
-  @property(Label)
-  labelUserExp: Label;
-  @property(Label)
-  labelName: Label;
-  @property(Label)
-  labelLevel: Label;
-  @property(Label)
-  labelGold: Label;
-  @property(Label)
-  labelStr: Label;
-  @property(Label)
-  labelVit: Label;
-  @property(Label)
-  labelDex: Label;
-  @property(Label)
-  labelInt: Label;
-  @property(Label)
-  labelAgi: Label;
-  @property(Label)
-  labelLux: Label;
-
-  ebn: EditBox;
-
-  protected onLoad(): void {
-    this.UserDataLoad();
-  }
-
-  btnSave() {
-    let userData = {
-      name: this.labelUserName.string ? this.labelUserName.string : `Kirito`,
-      level: this.labelUserLevel.string
-        ? Number(this.labelUserLevel.string) < 1
-          ? 1
-          : this.labelUserLevel.string
-        : 1,
-      gold: this.labelUserGold.string
-        ? Number(this.labelUserGold.string) < 0
-          ? 0
-          : this.labelUserGold.string
-        : 0,
-      exp: this.labelUserExp.string,
-      str: this.labelStr.string
-        ? Number(this.labelStr.string) < 0
-          ? 0
-          : this.labelStr.string
-        : 0,
-      vit: this.labelVit.string
-        ? Number(this.labelVit.string) < 0
-          ? 0
-          : this.labelVit.string
-        : 0,
-      dex: this.labelDex.string
-        ? Number(this.labelDex.string) < 0
-          ? 0
-          : this.labelDex.string
-        : 0,
-      int: this.labelInt.string
-        ? Number(this.labelInt.string) < 0
-          ? 0
-          : this.labelInt.string
-        : 0,
-      agi: this.labelAgi.string
-        ? Number(this.labelAgi.string) < 0
-          ? 0
-          : this.labelAgi.string
-        : 0,
-      lux: this.labelLux.string
-        ? Number(this.labelLux.string) < 0
-          ? 0
-          : this.labelLux.string
-        : 0,
-    };
-    SaveAndLoad.getInstance.saveUserData(userData);
-    this.UserDataLoad();
-  }
-  UserDataLoad() {
-    let data = SaveAndLoad.getInstance.loadUserData(),
-      exp: string,
-      conLabel = {
-        name: this.labelUserName,
-        level: this.labelUserLevel,
-        gold: this.labelUserGold,
-        exp: exp,
-        str: this.labelStr,
-        vit: this.labelVit,
-        dex: this.labelDex,
-        int: this.labelInt,
-        agi: this.labelAgi,
-        lux: this.labelLux,
-      };
-    for (let i in data) {
-      warn(i);
-      try {
-        conLabel[i].string = data[i];
-      } catch {
-        exp = data[i];
-      }
+export default class CharactorPage extends BaseSingletonComponent<CharactorPage>() {
+    @property(Node)
+    labelUserData: Node;
+    @property(Node)
+    labelExtraAbility: Node;
+    conUserData = {};
+    conExtra = {};
+    protected onLoad(): void {
+        super.onLoad();
+        this.UserDataLoad();
     }
-    if (!exp) exp = `0`;
-    this.labelUserExp.string = `${exp}/${data.level * 10}`;
-  }
+    UserDataLoad() {
+        let data = SaveAndLoad.getInstance.loadUserData();
+        for (let i of this.labelUserData.children) {
+            this.conUserData[i.name.replace(`LabelUser`, ``)] =
+                i.getComponent(Label);
+        }
+        for (let i of this.labelExtraAbility.children)
+            this.conExtra[i.name.replace(`LabelPlus`, ``)] =
+                i.getComponent(Label);
+        for (let i in data[0]) {
+            this.conUserData[i].string = data[0][i].toString();
+        }
+        for (let i in data[1]) {
+            this.conExtra[i].string = `(+${data[1][i].toString()})`;
+        }
+    }
+    addPoint(e: { target: { name: string } }) {
+        let data = SaveAndLoad.getInstance.loadUserData(),
+            key = e.target.name.replace(`BtnPlus`, ``);
+        if (data[0][`Point`] == 0) return;
+        data[0][`Point`] -= 1;
+        data[1][key] += 1;
+        data[0][key] += 1;
+        SaveAndLoad.getInstance.saveUserData(data[0], data[1]);
+        this.UserDataLoad();
+    }
+    minusPoint(e: { target: { name: string } }) {
+        let data = SaveAndLoad.getInstance.loadUserData(),
+            key = e.target.name.replace(`BtnMinus`, ``);
+        if (data[1][key] == 0) return;
+        data[1][key] -= 1;
+        data[0][key] -= 1;
+        data[0][`Point`] += 1;
+        SaveAndLoad.getInstance.saveUserData(data[0], data[1]);
+        this.UserDataLoad();
+    }
 }
+

@@ -1,0 +1,12 @@
+{
+  "ver": "1.0.0",
+  "importer": "*",
+  "imported": true,
+  "uuid": "b0648409-2069-4bd0-829b-c40dba8d4dd4",
+  "files": [
+    ".vsix",
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {}
+}
