@@ -1,4 +1,4 @@
-import { _decorator, Component } from "cc";
+import { _decorator, Component, UIOpacity } from "cc";
 
 const { ccclass, property } = _decorator;
 
@@ -14,8 +14,8 @@ export default class BaseComponent extends Component {
     protected onLoad(): void {
         // this.setEvent(GameEvent.SetLanguage, this.setLanguage);
         // PublicData.getInstance.arr_BaseComponent.push(this);
-        // if (this.getComponent(UIOpacity))
-        //     this.getComponent(UIOpacity).opacity = 255
+        if (this.getComponent(UIOpacity))
+            this.getComponent(UIOpacity).opacity = 255
     }
     protected start(): void {
     }

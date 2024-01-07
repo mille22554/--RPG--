@@ -1,0 +1,14 @@
+{
+  "splash-setting": {
+    "url": "C:\\ProgramData\\cocos\\editors\\Creator\\3.4.2\\resources\\app.asar\\static\\logo.png",
+    "displayRatio": 0.4,
+    "totalTime": 0,
+    "clearColor": {
+      "x": 0.88,
+      "y": 0.88,
+      "z": 0.88,
+      "w": 1
+    },
+    "displayWatermark": true
+  }
+}
