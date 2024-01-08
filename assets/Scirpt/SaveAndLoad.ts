@@ -74,7 +74,8 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             AreaLevel: 1,
             isBattle: false,
             isField: false,
-            isResting: false
+            isResting: false,
+            ZoneLevel: 1
         };
         return data;
     }

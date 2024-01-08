@@ -1,3 +1,4 @@
+import { EventTarget } from "cc";
 import BaseSingleton from "../Model/Singleton/BaseSingleton";
 import { SaveAndLoad } from "./SaveAndLoad";
 
@@ -25,9 +26,10 @@ export interface UserData {
     Speed: number;
     Lucky: number;
     ZoneName: string;
+    ZoneLevel: number;
     AreaLevel: number;
     isBattle: boolean;
-    isField: boolean
+    isField: boolean;
     isResting: boolean;
 }
 export interface ExtraPoint {
@@ -85,10 +87,11 @@ export class MobData extends BaseSingleton<MobData>() {
                 Speed: 0,
                 Lucky: 0,
                 ZoneName: ``,
+                ZoneLevel: 0,
                 AreaLevel: 0,
                 isBattle: false,
                 isField: false,
-                isResting: false
+                isResting: false,
             },
             紅史萊姆: {
                 Name: "",
@@ -117,7 +120,8 @@ export class MobData extends BaseSingleton<MobData>() {
                 AreaLevel: 0,
                 isBattle: false,
                 isField: false,
-                isResting: false
+                isResting: false,
+                ZoneLevel: 0,
             },
             藍史萊姆: {
                 Name: "",
@@ -146,7 +150,8 @@ export class MobData extends BaseSingleton<MobData>() {
                 AreaLevel: 0,
                 isBattle: false,
                 isField: false,
-                isResting: false
+                isResting: false,
+                ZoneLevel: 0,
             },
             綠史萊姆: {
                 Name: "",
@@ -175,7 +180,8 @@ export class MobData extends BaseSingleton<MobData>() {
                 AreaLevel: 0,
                 isBattle: false,
                 isField: false,
-                isResting: false
+                isResting: false,
+                ZoneLevel: 0,
             },
             黃史萊姆: {
                 Name: "",
@@ -204,7 +210,8 @@ export class MobData extends BaseSingleton<MobData>() {
                 AreaLevel: 0,
                 isBattle: false,
                 isField: false,
-                isResting: false
+                isResting: false,
+                ZoneLevel: 0,
             },
         },
     };
@@ -328,4 +335,7 @@ export class SetInfo extends BaseSingleton<SetInfo>() {
         data.Dodge = (data.Agi * 3 + data.Dex * 2 + data.Lux + 500) / 500;
         return data;
     }
+}
+export class EventMng extends BaseSingleton<EventMng>() {
+    event = new EventTarget();
 }

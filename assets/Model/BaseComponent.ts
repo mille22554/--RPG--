@@ -1,4 +1,5 @@
 import { _decorator, Component, UIOpacity } from "cc";
+import { EventMng } from "../Scirpt/DataBase";
 
 const { ccclass, property } = _decorator;
 

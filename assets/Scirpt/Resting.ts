@@ -3,6 +3,7 @@ import BaseSingletonComponent from "../Model/Singleton/BaseSingletonComponent";
 import BattlePage from "./BattlePage";
 import { SaveAndLoad } from "./SaveAndLoad";
 import CharactorPage from "./CharactorPage";
+import { EventMng } from "./DataBase";
 
 const { ccclass, property } = _decorator;
 @ccclass("Resting")
@@ -12,6 +13,7 @@ export default class Resting extends BaseSingletonComponent<Resting>() {
     protected onLoad(): void {
         super.onLoad();
         this.hide();
+        EventMng.getInstance.event.on(`Rest`, this.Rest);
     }
     Rest() {
         let data = SaveAndLoad.getInstance.loadUserData(),

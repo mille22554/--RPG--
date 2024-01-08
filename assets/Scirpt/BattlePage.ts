@@ -1,5 +1,6 @@
 import {
     Button,
+    EventTarget,
     Label,
     Node,
     UIOpacity,
@@ -11,7 +12,7 @@ import {
 import BaseSingletonComponent from "../Model/Singleton/BaseSingletonComponent";
 import PanelPlace from "./PanelPlace";
 import PanelLog from "./PanelLog";
-import { ExtraPoint, MobData, SetInfo, UserData, ZoneData } from "./DataBase";
+import { EventMng, ExtraPoint, MobData, SetInfo, UserData, ZoneData } from "./DataBase";
 import { SaveAndLoad } from "./SaveAndLoad";
 import CharactorPage from "./CharactorPage";
 import Resting from "./Resting";
@@ -53,6 +54,8 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
 
         for (let i of this.info.children)
             this.conLabelInfo[i.name] = i.getComponent(Label);
+
+        EventMng.getInstance.event.on(`SetZoneName`, this.setZoneName, this);
     }
     protected start(): void {
         let data = SaveAndLoad.getInstance.loadUserData();
@@ -81,7 +84,7 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
                 );
             }
         }
-        if (this.userData.isResting) Resting.instance.Rest();
+        if (this.userData.isResting) EventMng.getInstance.event.emit(`Rest`);
         this.infoLabelRefresh();
     }
     PanelPlaceSwitch() {
@@ -279,5 +282,13 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
                 this.PlayerSpeed += this.userData.Speed;
             }
         }
+    }
+    setZoneName(name: string) {
+        this.home.active = false;
+        this.field.active = true;
+        PanelPlace.instance.hide();
+        PanelLog.instance.addLog(`進入了${name}`);
+        this.zoneName.string = name;
+        this.infoLabelRefresh();
     }
 }
