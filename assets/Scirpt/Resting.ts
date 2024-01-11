@@ -13,16 +13,11 @@ export default class Resting extends BaseSingletonComponent<Resting>() {
     protected onLoad(): void {
         super.onLoad();
         this.hide();
-        EventMng.getInstance.event.on(`Rest`, this.Rest);
+        this.setEvent(`Rest`, this.Rest);
     }
     Rest() {
-        let data = SaveAndLoad.getInstance.loadUserData(),
-            HP = Number(data[0][`HP`].split(`/`)[0]),
-            MP = Number(data[0][`MP`].split(`/`)[0]),
-            Stamina = Number(data[0][`Stamina`].split(`/`)[0]),
-            maxStamina = Number(data[0][`Stamina`].split(`/`)[1]),
-            maxHP = Number(data[0][`HP`].split(`/`)[1]),
-            maxMP = Number(data[0][`MP`].split(`/`)[1]);
+        if (BattlePage.instance.panelMessage.active) return;
+        let data = SaveAndLoad.getInstance.loadUserData();
 
         if (data[0][`isBattle`]) {
             return;
@@ -31,7 +26,15 @@ export default class Resting extends BaseSingletonComponent<Resting>() {
         if (this.node.active) {
             data[0][`isResting`] = true;
             this.timer = setInterval(() => {
+                let data = SaveAndLoad.getInstance.loadUserData(),
+                    HP = Number(data[0][`HP`].split(`/`)[0]),
+                    MP = Number(data[0][`MP`].split(`/`)[0]),
+                    Stamina = Number(data[0][`Stamina`].split(`/`)[0]),
+                    maxStamina = Number(data[0][`Stamina`].split(`/`)[1]),
+                    maxHP = Number(data[0][`HP`].split(`/`)[1]),
+                    maxMP = Number(data[0][`MP`].split(`/`)[1]);
                 if (BattlePage.instance.field.active) {
+                    if (HP == maxHP && MP == maxMP) return;
                     Stamina -= 1;
                     if (Stamina < 0) {
                         Stamina = 0;
@@ -40,14 +43,16 @@ export default class Resting extends BaseSingletonComponent<Resting>() {
                         return;
                     }
                 } else {
-                    Stamina += 1;
+                    if (HP == maxHP && MP == maxMP && Stamina == maxStamina)
+                        return;
+                    Stamina += maxStamina * 0.01;
                     if (Stamina > maxStamina) Stamina = maxStamina;
                 }
 
-                HP += 1;
+                HP += maxHP * 0.01;
                 if (HP > maxHP) HP = maxHP;
 
-                MP += 1;
+                MP += maxMP * 0.01;
                 if (MP > maxMP) MP = maxMP;
 
                 data[0][`HP`] = `${Math.floor(HP)}/${

@@ -23,7 +23,6 @@ export default class Zone extends BaseComponent {
         data[0][`isField`] = true;
         SaveAndLoad.getInstance.saveUserData(data[0], data[1]);
 
-        warn(`123`)
-        EventMng.getInstance.event.emit(`SetZoneName`, this.labelName.string);
+        this.eventEmit(`SetZoneName`, this.labelName.string);
     }
 }

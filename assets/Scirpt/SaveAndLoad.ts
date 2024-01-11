@@ -1,41 +1,49 @@
 import { _decorator, Component, sys, warn } from "cc";
 import BaseSingleton from "../Model/Singleton/BaseSingleton";
 import CharactorPage from "./CharactorPage";
-import { UserData, ExtraPoint } from "./DataBase";
+import { UserData, ExtraPoint, ItemInfo } from "./DataBase";
 const { ccclass, property } = _decorator;
-const userDataKey = "userData";
-const mobDataKey = "mobData";
-const userExtraKey = "userExrta";
 
 @ccclass("SaveAndLoad")
 export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
     constructor() {
         super();
         this.loadUserData();
+        this.loadItemData(DataKey.userDropItemKey)
     }
     saveUserData(data, extra) {
         const userData = data;
         const userExtra = extra;
         const jsonData = JSON.stringify(userData);
         const jsonExtra = JSON.stringify(userExtra);
-        sys.localStorage.setItem(userDataKey, jsonData);
-        sys.localStorage.setItem(userExtraKey, jsonExtra);
+        sys.localStorage.setItem(DataKey.userDataKey, jsonData);
+        sys.localStorage.setItem(DataKey.userExtraKey, jsonExtra);
     }
     saveMobData(data) {
-        const mobData = data;
-        const jsonData = JSON.stringify(mobData);
-        sys.localStorage.setItem(mobDataKey, jsonData);
+        const Data = data;
+        const jsonData = JSON.stringify(Data);
+        sys.localStorage.setItem(DataKey.mobDataKey, jsonData);
     }
     loadMobData() {
-        const jsonData = sys.localStorage.getItem(mobDataKey);
-        let mobData = JSON.parse(jsonData) as UserData;
-        mobData = JSON.parse(jsonData) as UserData;
-        return mobData;
+        const jsonData = sys.localStorage.getItem(DataKey.mobDataKey);
+        let Data = JSON.parse(jsonData);
+        return Data;
     }
-
+    saveItemData(data, key: string) {
+        const Data = data;
+        const jsonData = JSON.stringify(Data);
+        sys.localStorage.setItem(key, jsonData);
+    }
+    loadItemData(key: string) {
+        const jsonData = sys.localStorage.getItem(key);
+        let Data = JSON.parse(jsonData);
+        this.saveItemData(Data == null ? this.initItem() : Data, key);
+        Data = JSON.parse(jsonData);
+        return Data;
+    }
     loadUserData() {
-        const jsonData = sys.localStorage.getItem(userDataKey);
-        const jsonExtra = sys.localStorage.getItem(userExtraKey);
+        const jsonData = sys.localStorage.getItem(DataKey.userDataKey);
+        const jsonExtra = sys.localStorage.getItem(DataKey.userExtraKey);
         let userData = JSON.parse(jsonData) as UserData;
         let userExtra = JSON.parse(jsonExtra) as ExtraPoint;
         this.saveUserData(
@@ -75,7 +83,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             isBattle: false,
             isField: false,
             isResting: false,
-            ZoneLevel: 1
+            ZoneLevel: 1,
         };
         return data;
     }
@@ -90,4 +98,26 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         };
         return extra;
     }
+    initItem() {
+        let item = [new ItemInfo()];
+        item[0].AD = 0;
+        item[0].AP = 0;
+        item[0].Critical = 0;
+        item[0].DEF = 0;
+        item[0].Dodge = 0;
+        item[0].Gold = 0;
+        item[0].ID = 0;
+        item[0].Lucky = 0;
+        item[0].MDF = 0;
+        item[0].Speed = 0;
+        item[0].Num = 0;
+        item[0].Name = ``;
+        return item;
+    }
+}
+export enum DataKey {
+    userDataKey = "userData",
+    mobDataKey = "mobData",
+    userExtraKey = "userExrta",
+    userDropItemKey = "userDropItem",
 }
