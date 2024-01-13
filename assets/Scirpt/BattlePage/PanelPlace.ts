@@ -1,10 +1,11 @@
-import { Node, Prefab, _decorator, warn } from "cc";
-import BaseSingletonComponent from "../Model/Singleton/BaseSingletonComponent";
-import { NodePoolManager } from "../Model/NodePoolMng/NodePoolMng";
-import EasyCode from "../Model/EasyCode";
-import { SaveAndLoad } from "./SaveAndLoad";
+import { Node, Prefab, _decorator } from "cc";
+import EasyCode from "../../Model/EasyCode";
+import { NodePoolManager } from "../../Model/NodePoolMng/NodePoolMng";
+import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
+import { PublicData } from "../DataBase/PublicData";
+import { SaveAndLoad } from "../DataBase/SaveAndLoad";
+import { ZoneData } from "../DataBase/ZoneData";
 import Zone from "./Zone";
-import { ZoneData } from "./DataBase";
 
 const { ccclass, property } = _decorator;
 @ccclass("PanelPlace")
@@ -21,15 +22,14 @@ export default class PanelPlace extends BaseSingletonComponent<PanelPlace>() {
     show(): void {
         super.show();
         EasyCode.getInstance.putInPool(`zoneItem`);
-        let data = SaveAndLoad.getInstance.loadUserData();
-        console.log(data[0][`ZoneLevel`])
-        for (let i = 0; i < data[0][`ZoneLevel`]; i++) {
+        SaveAndLoad.getInstance.loadUserData();
+        for (let i = 0; i < PublicData.getInstance.userData[`ZoneLevel`]; i++) {
             let zone = EasyCode.getInstance
                 .getFromPool(`zoneItem`)
                 .getComponent(Zone);
             zone.labelName.string = ZoneData.getInstance.zoneName[i];
             zone.labelLV.string = `LV${ZoneData.getInstance.zoneLV[i]}~`;
-            console.log(zone.node,this.content)
+            console.log(zone.node, this.content);
             zone.node.parent = this.content;
         }
     }
