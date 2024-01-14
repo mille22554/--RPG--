@@ -1,8 +1,9 @@
-import { _decorator, Label, Node, UIOpacity, warn } from "cc";
-import { SaveAndLoad } from "./SaveAndLoad";
+import { _decorator, Label, Node } from "cc";
 import BaseSingletonComponent from "../Model/Singleton/BaseSingletonComponent";
-import { SetInfo, UserData } from "./DataBase";
-import BattlePage from "./BattlePage";
+import { PublicData } from "./DataBase/PublicData";
+import { SaveAndLoad } from "./DataBase/SaveAndLoad";
+import { SetUserInfo } from "./計算/SetUserInfo";
+
 const { ccclass, property } = _decorator;
 @ccclass("CharactorPage")
 export default class CharactorPage extends BaseSingletonComponent<CharactorPage>() {
@@ -28,7 +29,7 @@ export default class CharactorPage extends BaseSingletonComponent<CharactorPage>
         this.UserDataLoad();
     }
     UserDataLoad() {
-        let data = SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadUserData();
 
         for (let i of [
             `Name`,
@@ -40,66 +41,57 @@ export default class CharactorPage extends BaseSingletonComponent<CharactorPage>
             `HP`,
             `MP`,
         ]) {
-            this.conUserData[i].string = data[0][i].toString();
+            this.conUserData[i].string =
+                PublicData.getInstance.userData[i].toString();
         }
         for (let i of [`Str`, `Vit`, `Dex`, `Int`, `Agi`, `Lux`]) {
-            this.conExtra[i].string = `(+${data[1][i].toString()})`;
-            this.conUserData[i].string = (data[0][i] + data[1][i]).toString();
+            this.conExtra[i].string = `(+${PublicData.getInstance.userExtra[
+                i
+            ].toString()})`;
+            this.conUserData[i].string = (
+                PublicData.getInstance.userData[i] +
+                PublicData.getInstance.userExtra[i]
+            ).toString();
         }
-        data[0] = SetInfo.getInstance.setUserInfo(data[0] as UserData, data[1]);
-        for (let i of [`AD`, `AP`, `DEF`, `MDF`, `Dodge`, `Speed`]) {
-            this.conUserData[i].string = data[0][i].toString();
+        SetUserInfo.getInstance.setUserInfo();
+        for (let i of [`AD`, `AP`, `DEF`, `MDF`, `Speed`]) {
+            this.conUserData[i].string =
+                PublicData.getInstance.userData[i].toString();
+        }
+        for (let i of [`Dodge`, `Critical`]) {
+            this.conUserData[i].string = Number(
+                PublicData.getInstance.userData[i]
+            ).toFixed(3);
         }
     }
     addPoint(e: { target: { name: string } }) {
         let data = SaveAndLoad.getInstance.loadUserData(),
-        key = e.target.name.replace(`BtnPlus`, ``);
+            key = e.target.name.replace(`BtnPlus`, ``);
 
-        if (data[0][`isBattle`]) return;
-        if (data[0][`Point`] == 0) return;
+        if (PublicData.getInstance.userData[`isBattle`]) return;
+        if (PublicData.getInstance.userData[`Point`] == 0) return;
 
-        data[0][`Point`] -= 1;
-        data[1][key] += 1;
-        SaveAndLoad.getInstance.saveUserData(data[0], data[1]);
+        PublicData.getInstance.userData[`Point`] -= 1;
+        PublicData.getInstance.userExtra[key] += 1;
+        SaveAndLoad.getInstance.saveUserData(
+            PublicData.getInstance.userData,
+            PublicData.getInstance.userExtra
+        );
         this.UserDataLoad();
     }
     minusPoint(e: { target: { name: string } }) {
         let data = SaveAndLoad.getInstance.loadUserData(),
             key = e.target.name.replace(`BtnMinus`, ``);
 
-        if (data[0][`isBattle`]) return;
-        if (data[1][key] == 0) return;
-        
-        data[1][key] -= 1;
-        data[0][`Point`] += 1;
-        SaveAndLoad.getInstance.saveUserData(data[0], data[1]);
+        if (PublicData.getInstance.userData[`isBattle`]) return;
+        if (PublicData.getInstance.userExtra[key] == 0) return;
+
+        PublicData.getInstance.userExtra[key] -= 1;
+        PublicData.getInstance.userData[`Point`] += 1;
+        SaveAndLoad.getInstance.saveUserData(
+            PublicData.getInstance.userData,
+            PublicData.getInstance.userExtra
+        );
         this.UserDataLoad();
-    }
-    LevelUP(data: UserData, exp, MaxExp) {
-        data.Level += 1;
-        data.Str += 1;
-        data.Vit += 1;
-        data.Dex += 1;
-        data.Agi += 1;
-        data.Int += 1;
-        data.Lux += 1;
-
-        let stamina = Number(data.Stamina.split(`/`)[0]) + 10,
-            maxStamina = Number(data.Stamina.split(`/`)[1]) + 10,
-            HP = Number(data.HP.split(`/`)[0]) + data.Vit * 5 + data.Level * 10,
-            maxHP =
-                Number(data.HP.split(`/`)[1]) + data.Vit * 5 + data.Level * 10,
-            MP = Number(data.MP.split(`/`)[0]) + data.Level * 5 + data.Int * 5,
-            maxMP =
-                Number(data.MP.split(`/`)[1]) + data.Level * 5 + data.Int * 5;
-
-        data.Stamina = `${stamina}/${maxStamina}`;
-        data.HP = `${HP}/${maxHP}`;
-        data.MP = `${MP}/${maxMP}`;
-        data.Point += 6;
-        exp -= MaxExp;
-        MaxExp = data.Level * 10;
-        data.Exp = `${exp}/${MaxExp}`;
-        return data;
     }
 }

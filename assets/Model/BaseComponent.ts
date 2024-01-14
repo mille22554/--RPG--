@@ -1,5 +1,5 @@
-import { _decorator, Component, UIOpacity } from "cc";
-import { EventMng } from "../Scirpt/DataBase";
+import { _decorator, Component, UIOpacity, warn } from "cc";
+import { EventMng } from "../Scirpt/DataBase/DataBase";
 
 const { ccclass, property } = _decorator;
 
@@ -45,9 +45,11 @@ export default class BaseComponent extends Component {
     }
     setEvent(name: string, callback: any | Function) {
         // EventMng.getInstance.mapEvnet.get(NotificationType.Pulic).on(name, callback, this);
+        EventMng.getInstance.event.on(name, callback, this);
     }
     eventEmit(name: string, ...any: any[]) {
         // EventMng.getInstance.emit(NotificationType.Pulic, name, ...any);
+        EventMng.getInstance.event.emit(name, ...any);
     }
     deletEvent(name: string, callback: any | Function) {
         // EventMng.getInstance.mapEvnet.get(NotificationType.Pulic).off(name, callback, this);
