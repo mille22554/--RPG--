@@ -1,4 +1,4 @@
-import { _decorator, sys } from "cc";
+import { _decorator, sys, warn } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import { ItemType } from "./ItemInfo";
 import { PublicData } from "./PublicData";
@@ -57,13 +57,33 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         sys.localStorage.setItem(key, jsonData);
     }
     loadItemData() {
-        for (let key of [DataKey.DropItemKey]) {
+        for (let key of [
+            DataKey.UserDropItemKey,
+            DataKey.UserEquipKey,
+            DataKey.UserUseItemKey,
+        ]) {
             const jsonData = sys.localStorage.getItem(key);
             let Data = JSON.parse(jsonData);
-            this.saveItemData(Data == null ? new ItemType()[key] : Data, key);
+            this.saveItemData(
+                Data == null ? this.firstLogin(key, Data) : Data,
+                key
+            );
             Data = JSON.parse(jsonData);
-            PublicData.getInstance.item[key] = Data;
+            PublicData.getInstance.userItem[key] = Data;
         }
+    }
+    firstLogin(key, Data) {
+        if (key == DataKey.UserDropItemKey)
+            Data = PublicData.getInstance.item.dropItem;
+        if (key == DataKey.UserEquipKey) {
+            Data = [PublicData.getInstance.item.equipment.短刀];
+        }
+        if (key == DataKey.UserUseItemKey) {
+            Data = PublicData.getInstance.item.useItem;
+            Data.HP藥水_小.Num = 10;
+            Data.體力藥水_小.Num = 10;
+        }
+        return Data;
     }
     //#endregion
 }
@@ -71,5 +91,7 @@ export enum DataKey {
     userDataKey = "userData",
     mobDataKey = "mobData",
     userExtraKey = "userExrta",
-    DropItemKey = "dropItem",
+    UserDropItemKey = "userDropItem",
+    UserEquipKey = "userEquip",
+    UserUseItemKey = "userUseItem",
 }

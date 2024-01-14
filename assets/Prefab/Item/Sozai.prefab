@@ -132,7 +132,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 300,
+      "width": 700,
       "height": 100
     },
     "_anchorPoint": {
@@ -171,7 +171,7 @@
     "_string": "史萊姆球",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 61,
+    "_actualFontSize": 60,
     "_fontSize": 60,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -184,7 +184,7 @@
     "_isBold": false,
     "_isUnderline": false,
     "_underlineHeight": 2,
-    "_cacheMode": 0,
+    "_cacheMode": 2,
     "_id": ""
   },
   {
@@ -301,7 +301,7 @@
     "_string": "X9999999",
     "_horizontalAlign": 2,
     "_verticalAlign": 1,
-    "_actualFontSize": 61,
+    "_actualFontSize": 60,
     "_fontSize": 60,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -314,7 +314,7 @@
     "_isBold": false,
     "_isUnderline": false,
     "_underlineHeight": 2,
-    "_cacheMode": 0,
+    "_cacheMode": 2,
     "_id": ""
   },
   {
@@ -471,8 +471,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "5b5ddXLMdFPRbVtd45EZoD9",
-    "handler": "selectZone",
+    "_componentId": "92337OOjqNBbJ44zf7Fkkll",
+    "handler": "openInfo",
     "customEventData": ""
   },
   {

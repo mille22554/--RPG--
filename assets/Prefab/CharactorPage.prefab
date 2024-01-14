@@ -945,7 +945,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "錢",
+    "_string": "$",
     "_horizontalAlign": 2,
     "_verticalAlign": 1,
     "_actualFontSize": 60,

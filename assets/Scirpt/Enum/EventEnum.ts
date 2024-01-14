@@ -3,4 +3,5 @@ export enum EventEnum {
     infoLabelRefresh = `infoLabelRefresh`,
     SetZoneName = `SetZoneName`,
     setBtnLabel = `setBtnLabel`,
+    refreshItemPage = `refreshItemPage`,
 }

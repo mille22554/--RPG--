@@ -6,14 +6,14 @@ import { ItemInfo } from "../DataBase/ItemInfo";
 import PanelMessage from "./PanelMessage";
 
 const { ccclass, property } = _decorator;
-@ccclass("Sozai")
-export default class Sozai extends BaseComponent {
+@ccclass("UseItem")
+export default class UseItem extends BaseComponent {
     @property(Label)
     Name: Label;
     @property(Label)
     Num: Label;
     info: ItemInfo;
     openInfo() {
-        PanelMessage.instance.switchPanelMessageSozai(this.info);
+        PanelMessage.instance.switchPanelMessageUse(this.info);
     }
 }

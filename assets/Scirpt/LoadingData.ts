@@ -1,10 +1,9 @@
-import { Prefab, _decorator, instantiate, warn } from "cc";
+import { Prefab, _decorator, instantiate } from "cc";
 import BaseComponent from "../Model/BaseComponent";
-import { DataKey, SaveAndLoad } from "./DataBase/SaveAndLoad";
-import { SetUserInfo } from "./計算/SetUserInfo";
-import { DropItem } from "./DataBase/ItemInfo";
-import { SetItemInfo } from "./計算/SetItemInfo";
 import { PublicData } from "./DataBase/PublicData";
+import { DataKey, SaveAndLoad } from "./DataBase/SaveAndLoad";
+import { SetItemInfo } from "./計算/SetItemInfo";
+import { SetUserInfo } from "./計算/SetUserInfo";
 
 const { ccclass, property } = _decorator;
 @ccclass(`LoaingData`)
@@ -18,18 +17,21 @@ class LoaingData extends BaseComponent {
     @property(Prefab)
     pageBtn: Prefab = null;
     protected async start() {
-        await SaveAndLoad.getInstance.startGameLoad();
-        SetUserInfo.getInstance.setUserInfo();
-        for (let key in PublicData.getInstance.item.dropItem) {
-            SetItemInfo.getInstance.setDropItemInfo(
-                PublicData.getInstance.item.dropItem[key],
-                key
+        for (let type in PublicData.getInstance.item) {
+            for (let key in PublicData.getInstance.item[type]) {
+                SetItemInfo.getInstance.setItemInfo(
+                    PublicData.getInstance.item[type][key],
+                    key
+                );
+            }
+            SaveAndLoad.getInstance.saveItemData(
+                PublicData.getInstance.item[type],
+                type
             );
         }
-        SaveAndLoad.getInstance.saveItemData(
-            PublicData.getInstance.item.dropItem,
-            DataKey.DropItemKey
-        );
+        
+        await SaveAndLoad.getInstance.startGameLoad();
+        SetUserInfo.getInstance.setUserInfo();
 
         instantiate(this.battlePage).parent = this.node;
         instantiate(this.charactorPage).parent = this.node;

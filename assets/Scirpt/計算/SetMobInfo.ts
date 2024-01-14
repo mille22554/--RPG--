@@ -102,7 +102,7 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
             case MobName.M0:
                 let i = new DropItem().史萊姆球;
                 i.Name = DropItemName.DI0;
-                i = SetItemInfo.getInstance.setDropItemInfo(i, i.Name);
+                i = SetItemInfo.getInstance.setItemInfo(i, i.Name);
                 let dropNum = randomRangeInt(0, 3);
                 if (dropNum > 0)
                     PanelLog.instance.addLog(
@@ -114,14 +114,14 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
                 PublicData.getInstance.item.dropItem[i.Name].Name = i.Name;
                 SaveAndLoad.getInstance.saveItemData(
                     PublicData.getInstance.item.dropItem,
-                    DataKey.DropItemKey
+                    DataKey.UserDropItemKey
                 );
                 break;
             case MobName.M1:
                 for (let id of [DropItemName.DI0, DropItemName.DI1]) {
                     let i = new DropItem()[id];
                     i.Name = id;
-                    i = SetItemInfo.getInstance.setDropItemInfo(i, i.Name);
+                    i = SetItemInfo.getInstance.setItemInfo(i, i.Name);
                     let dropNum = randomRangeInt(0, 3);
                     if (dropNum > 0)
                         PanelLog.instance.addLog(
@@ -136,7 +136,7 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
                 for (let id of [DropItemName.DI0, DropItemName.DI2]) {
                     let i = new DropItem()[id];
                     i.Name = id;
-                    i = SetItemInfo.getInstance.setDropItemInfo(i, i.Name);
+                    i = SetItemInfo.getInstance.setItemInfo(i, i.Name);
                     let dropNum = randomRangeInt(0, 3);
                     if (dropNum > 0)
                         PanelLog.instance.addLog(
@@ -151,7 +151,7 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
                 for (let id of [DropItemName.DI0, DropItemName.DI3]) {
                     let i = new DropItem()[id];
                     i.Name = id;
-                    i = SetItemInfo.getInstance.setDropItemInfo(i, i.Name);
+                    i = SetItemInfo.getInstance.setItemInfo(i, i.Name);
                     let dropNum = randomRangeInt(0, 3);
                     if (dropNum > 0)
                         PanelLog.instance.addLog(
@@ -166,7 +166,7 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
                 for (let id of [DropItemName.DI0, DropItemName.DI4]) {
                     let i = new DropItem()[id];
                     i.Name = id;
-                    i = SetItemInfo.getInstance.setDropItemInfo(i, i.Name);
+                    i = SetItemInfo.getInstance.setItemInfo(i, i.Name);
                     let dropNum = randomRangeInt(0, 3);
                     if (dropNum > 0)
                         PanelLog.instance.addLog(
@@ -180,7 +180,7 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
         }
         SaveAndLoad.getInstance.saveItemData(
             PublicData.getInstance.item.dropItem,
-            DataKey.DropItemKey
+            DataKey.UserDropItemKey
         );
     }
 }
