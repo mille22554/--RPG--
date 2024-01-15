@@ -10,7 +10,7 @@ import {
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
 import { MyColor } from "../DataBase/MyColor";
 import { PublicData } from "../DataBase/PublicData";
-import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
+import { SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { ExtraPoint, UserData } from "../DataBase/UserData";
 import { EventEnum } from "../Enum/EventEnum";
 import { Battle } from "../計算/Battle";
@@ -18,7 +18,8 @@ import { SetMobInfo } from "../計算/SetMobInfo";
 import { SetUserInfo } from "../計算/SetUserInfo";
 import PanelLog from "./PanelLog";
 import PanelPlace from "./PanelPlace";
-import { SetItemInfo } from "../計算/SetItemInfo";
+import PanelMarket from "./PanelMarket";
+import PlayerEquip from "../DataBase/PlayerEquip";
 
 const { ccclass, property } = _decorator;
 @ccclass("BattlePage")
@@ -82,6 +83,8 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
     }
     show(...any: any[]): void {
         super.show();
+        PanelPlace.instance.hide();
+        PanelMarket.instance.hide();
         this.infoLabelRefresh();
     }
     escape() {
@@ -293,6 +296,7 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
         for (let type in PublicData.getInstance.userItem) {
             SaveAndLoad.getInstance.saveItemData(null, type);
         }
+        SaveAndLoad.getInstance.savePlayerEquipData(new PlayerEquip());
 
         await SaveAndLoad.getInstance.startGameLoad();
         SetUserInfo.getInstance.setUserInfo();

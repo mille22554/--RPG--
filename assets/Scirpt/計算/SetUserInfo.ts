@@ -49,7 +49,7 @@ export class SetUserInfo extends BaseSingleton<SetUserInfo>() {
         data.MP = `${MP}/${maxMP}`;
         data.Point += 6;
         exp -= MaxExp;
-        MaxExp += data.Level * 10;
+        MaxExp += data.Level * 20;
         data.Exp = `${exp}/${MaxExp}`;
         return data;
     }

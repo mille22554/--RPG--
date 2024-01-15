@@ -3625,10 +3625,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 73
+    },
     "component": "",
-    "_componentId": "1e387znuxFDQo1uDQVDC2BP",
-    "handler": "BackHome",
+    "_componentId": "7f34d0dkNhGZpdpJ3A9ELGx",
+    "handler": "EquipORUse",
     "customEventData": ""
   },
   {

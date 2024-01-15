@@ -16,6 +16,6 @@ export default class Equipment extends BaseComponent {
     Type: Label;
     info: ItemInfo;
     openInfo() {
-        PanelMessage.instance.switchPanelMessageEquip(this.info);
+        PanelMessage.instance.switchPanelMessageEquip(this);
     }
 }

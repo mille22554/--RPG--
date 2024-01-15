@@ -1,9 +1,9 @@
-import { Node, Prefab, _decorator } from "cc";
+import { Node, Prefab, _decorator, warn } from "cc";
 import EasyCode from "../../Model/EasyCode";
 import { NodePoolManager } from "../../Model/NodePoolMng/NodePoolMng";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
 import { PublicData } from "../DataBase/PublicData";
-import { SaveAndLoad } from "../DataBase/SaveAndLoad";
+import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
 import Equipment from "./Equipment";
 import PanelMessage from "./PanelMessage";
 import Sozai from "./Sozai";
@@ -43,8 +43,15 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
             item.node.parent = this.content;
             item.Name.string = i.Name;
             item.Type.string = i.Type;
+            PublicData.getInstance.userItem.userEquip[
+                PublicData.getInstance.userItem.userEquip.indexOf(i)
+            ].Num = PublicData.getInstance.userItem.userEquip.indexOf(i);
             item.info = i;
         }
+        SaveAndLoad.getInstance.saveItemData(
+            PublicData.getInstance.userItem.userEquip,
+            DataKey.UserEquipKey
+        );
         PanelMessage.instance.nowType = `equipment`;
     }
     selectType(e) {
@@ -120,7 +127,9 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
             case `sozai`:
                 _class = Sozai;
                 for (let i in PublicData.getInstance.userItem.userDropItem) {
-                    if (PublicData.getInstance.userItem.userDropItem[i].Num == 0)
+                    if (
+                        PublicData.getInstance.userItem.userDropItem[i].Num == 0
+                    )
                         continue;
                     let item = EasyCode.getInstance
                         .getFromPool(PanelMessage.instance.nowType)
@@ -131,7 +140,8 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                     ].string = `X${PublicData.getInstance.userItem.userDropItem[i].Num}`;
                     item[`Name`].string =
                         PublicData.getInstance.userItem.userDropItem[i].Name;
-                    item[`info`] = PublicData.getInstance.userItem.userDropItem[i];
+                    item[`info`] =
+                        PublicData.getInstance.userItem.userDropItem[i];
                 }
                 break;
             case `use`:

@@ -26,6 +26,7 @@ export class UserData {
     isBattle = false;
     isField = false;
     isResting = false;
+    isTwoHand = false;
     ZoneLevel = 1;
 }
 export class ExtraPoint {

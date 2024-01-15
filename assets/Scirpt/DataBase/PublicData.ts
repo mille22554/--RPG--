@@ -1,5 +1,6 @@
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import { ItemType, UserItem } from "./ItemInfo";
+import PlayerEquip from "./PlayerEquip";
 import { ExtraPoint, UserData } from "./UserData";
 
 export class PublicData extends BaseSingleton<PublicData>() {
@@ -8,4 +9,5 @@ export class PublicData extends BaseSingleton<PublicData>() {
     item: ItemType = new ItemType();
     userItem = new UserItem();
     mobData = [new UserData()];
+    playerEquip = new PlayerEquip();
 }
