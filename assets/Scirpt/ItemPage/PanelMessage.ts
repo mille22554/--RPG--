@@ -145,9 +145,11 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         PublicData.getInstance.userItem.userUseItem[
             this.nowItemClass[`info`].Type
         ].Num -= 1;
-        this.Num.string = `X${PublicData.getInstance.userItem.userUseItem[
-            this.nowItemClass[`info`].Type
-        ].Num.toString()}`;
+
+        this.Num.string =
+            this.nowItemClass.Num.string = `X${PublicData.getInstance.userItem.userUseItem[
+                this.nowItemClass[`info`].Type
+            ].Num.toString()}`;
 
         PublicData.getInstance.userData[`HP`] = `${Math.floor(HP)}/${
             PublicData.getInstance.userData[`HP`].split(`/`)[1]
@@ -167,13 +169,14 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             PublicData.getInstance.userItem.userUseItem,
             DataKey.UserUseItemKey
         );
-        this.eventEmit(EventEnum.refreshItemPage);
         if (
             PublicData.getInstance.userItem.userUseItem[
                 this.nowItemClass[`info`].Type
             ].Num == 0
-        )
+        ) {
             this.hide();
+            this.eventEmit(EventEnum.refreshItemPage);
+        }
     }
     sale() {
         SaveAndLoad.getInstance.loadUserData();
@@ -216,12 +219,16 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             PublicData.getInstance.userItem.userDropItem[
                 this.nowItemClass[`info`].Type
             ].Gold;
+
         PublicData.getInstance.userItem.userDropItem[
             this.nowItemClass[`info`].Type
         ].Num -= 1;
-        this.Num.string = `X${PublicData.getInstance.userItem.userDropItem[
-            this.nowItemClass[`info`].Type
-        ].Num.toString()}`;
+
+        this.Num.string =
+            this.nowItemClass.Num.string = `X${PublicData.getInstance.userItem.userDropItem[
+                this.nowItemClass[`info`].Type
+            ].Num.toString()}`;
+
         SaveAndLoad.getInstance.saveUserData(
             PublicData.getInstance.userData,
             PublicData.getInstance.userExtra
@@ -230,25 +237,30 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             PublicData.getInstance.userItem.userDropItem,
             DataKey.UserDropItemKey
         );
-        this.eventEmit(EventEnum.refreshItemPage);
         if (
             PublicData.getInstance.userItem.userDropItem[
                 this.nowItemClass[`info`].Type
             ].Num == 0
-        )
+        ) {
             this.hide();
+            this.eventEmit(EventEnum.refreshItemPage);
+        }
     }
     saleUseItem() {
         PublicData.getInstance.userData.Gold +=
             PublicData.getInstance.userItem.userUseItem[
                 this.nowItemClass[`info`].Type
             ].Gold / 2;
+
         PublicData.getInstance.userItem.userUseItem[
             this.nowItemClass[`info`].Type
         ].Num -= 1;
-        this.Num.string = `X${PublicData.getInstance.userItem.userUseItem[
-            this.nowItemClass[`info`].Type
-        ].Num.toString()}`;
+
+        this.Num.string =
+            this.nowItemClass.Num.string = `X${PublicData.getInstance.userItem.userUseItem[
+                this.nowItemClass[`info`].Type
+            ].Num.toString()}`;
+
         SaveAndLoad.getInstance.saveUserData(
             PublicData.getInstance.userData,
             PublicData.getInstance.userExtra
@@ -257,12 +269,13 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             PublicData.getInstance.userItem.userUseItem,
             DataKey.UserUseItemKey
         );
-        this.eventEmit(EventEnum.refreshItemPage);
         if (
             PublicData.getInstance.userItem.userUseItem[
                 this.nowItemClass[`info`].Type
             ].Num == 0
-        )
+        ) {
             this.hide();
+            this.eventEmit(EventEnum.refreshItemPage);
+        }
     }
 }
