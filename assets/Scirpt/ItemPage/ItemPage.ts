@@ -1,4 +1,13 @@
-import { Node, Prefab, Size, UITransform, _decorator, v2, warn } from "cc";
+import {
+    Node,
+    Prefab,
+    Size,
+    UITransform,
+    _decorator,
+    find,
+    v2,
+    warn,
+} from "cc";
 import EasyCode from "../../Model/EasyCode";
 import { NodePoolManager } from "../../Model/NodePoolMng/NodePoolMng";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
@@ -156,6 +165,13 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
         }
     }
     setScrollViewHeight() {
+        if (!this.scrollView)
+            this.scrollView = find(`ScrollView`, this.node).getComponent(
+                UITransform
+            );
+        if (!this.view)
+            this.view = find(`view`, this.node).getComponent(UITransform);
+        
         if (PanelMessage.instance.node.active) {
             this.scrollView.setContentSize(
                 new Size(this.scrollView.width, 1150)
