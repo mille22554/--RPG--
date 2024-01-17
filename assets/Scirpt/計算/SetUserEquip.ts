@@ -7,11 +7,12 @@ import { UserEuqipInfo } from "../DataBase/UserData";
 import { EquipmentName } from "../Enum/EquipmentName";
 import Equipment from "../ItemPage/Equipment";
 import { EquipPart } from "../DataBase/EquipPart";
+import { EquipPartEnum } from "../Enum/EquipPartEnum";
 
 export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
     item: Equipment;
-    content: Node;
     set(item) {
+        warn(item.info);
         this.item = item;
         if (this.item.info.isEquip) {
             switch (item.info.Type) {
@@ -83,8 +84,7 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
                 case EquipmentName.E7:
                 case EquipmentName.E9:
                 case EquipmentName.E13:
-                    PublicData.getInstance.playerEquip.rightHand =
-                        new PlayerEquip().rightHand;
+                    this.unEquipRightHand();
                     break;
                 case EquipmentName.E1:
                     PublicData.getInstance.playerEquip.leftHand =
@@ -133,8 +133,7 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
                         new PlayerEquip().necklace;
                     break;
                 case EquipmentName.E22:
-                    PublicData.getInstance.playerEquip.ring =
-                        new PlayerEquip().ring;
+                    this.unEquipRing();
                     break;
                 case EquipmentName.E23:
                     PublicData.getInstance.playerEquip.mask =
@@ -172,70 +171,55 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
     rightHand(info: ItemInfo) {
         if (
             PublicData.getInstance.userData.isTwoHand ||
-            info.Type == EquipmentName.E13
+            (info.Type == EquipmentName.E13 &&
+                PublicData.getInstance.playerEquip.rightHand.ID != -1)
         ) {
             this.leftHand(info);
             return;
         }
-
-        if (PublicData.getInstance.playerEquip.rightHand.ID != -1)
-            PublicData.getInstance.userItem.userEquip[
-                PublicData.getInstance.playerEquip.rightHand.ID
-            ].isEquip = false;
+        this.setIsEquip(EquipPartEnum.rightHand);
         PublicData.getInstance.playerEquip.rightHand = info;
     }
     leftHand(info: ItemInfo) {
-        if (PublicData.getInstance.playerEquip.leftHand.ID != -1)
-            PublicData.getInstance.userItem.userEquip[
-                PublicData.getInstance.playerEquip.leftHand.ID
-            ].isEquip = false;
-        for (let type in EquipPart.getInstance.twoHand)
-            if (
-                PublicData.getInstance.playerEquip.rightHand.ID != -1 &&
-                PublicData.getInstance.playerEquip.rightHand.Type == type
-            )
-                PublicData.getInstance.userItem.userEquip[
-                    PublicData.getInstance.playerEquip.rightHand.ID
-                ].isEquip = false;
+        this.setIsEquip(EquipPartEnum.leftHand, null, EquipPartEnum.twoHand);
         PublicData.getInstance.playerEquip.leftHand = info;
     }
     twoHand(info: ItemInfo) {
-        if (PublicData.getInstance.playerEquip.rightHand.ID != -1)
-            PublicData.getInstance.userItem.userEquip[
-                PublicData.getInstance.playerEquip.rightHand.ID
-            ].isEquip = false;
-
-        if (PublicData.getInstance.playerEquip.leftHand.ID != -1)
-            PublicData.getInstance.userItem.userEquip[
-                PublicData.getInstance.playerEquip.leftHand.ID
-            ].isEquip = false;
-
+        this.setIsEquip(EquipPartEnum.rightHand, EquipPartEnum.leftHand);
         PublicData.getInstance.playerEquip.rightHand = info;
         PublicData.getInstance.playerEquip.leftHand = new ItemInfo();
     }
     topCloth(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.topCloth);
         PublicData.getInstance.playerEquip.topCloth = info;
     }
     pants(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.pants, null, EquipPartEnum.suit);
         PublicData.getInstance.playerEquip.pants = info;
     }
     suit(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.topCloth, EquipPartEnum.pants);
         PublicData.getInstance.playerEquip.topCloth = info;
         PublicData.getInstance.playerEquip.pants = new ItemInfo();
     }
     head(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.head);
         PublicData.getInstance.playerEquip.head = info;
     }
     shoes(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.shoes);
         PublicData.getInstance.playerEquip.shoes = info;
     }
     arm(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.arm);
         PublicData.getInstance.playerEquip.arm = info;
     }
     glove(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.glove);
         PublicData.getInstance.playerEquip.glove = info;
     }
     necklace(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.necklace);
         PublicData.getInstance.playerEquip.necklace = info;
     }
     ring(info: ItemInfo) {
@@ -245,18 +229,79 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
                 return;
             }
         }
+        if (PublicData.getInstance.playerEquip.ring[9].ID != -1)
+            PublicData.getInstance.userItem.userEquip[
+                PublicData.getInstance.playerEquip.ring[9].ID
+            ].isEquip = false;
         PublicData.getInstance.playerEquip.ring[9] = info;
     }
     mask(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.mask);
         PublicData.getInstance.playerEquip.mask = info;
     }
     eye(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.eye);
         PublicData.getInstance.playerEquip.eye = info;
     }
     cloak(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.cloak);
         PublicData.getInstance.playerEquip.cloak = info;
     }
     belt(info: ItemInfo) {
+        this.setIsEquip(EquipPartEnum.belt);
         PublicData.getInstance.playerEquip.belt = info;
+    }
+    unEquipRing() {
+        for (let i in PublicData.getInstance.playerEquip.ring)
+            if (
+                PublicData.getInstance.playerEquip.ring[i].ID ==
+                this.item.info.ID
+            )
+                PublicData.getInstance.playerEquip.ring[i] = new ItemInfo();
+    }
+    unEquipRightHand() {
+        if (this.item.info.Type == EquipmentName.E13)
+            if (
+                PublicData.getInstance.playerEquip.rightHand.ID ==
+                this.item.info.ID
+            )
+                PublicData.getInstance.playerEquip.rightHand = new ItemInfo();
+            else PublicData.getInstance.playerEquip.leftHand = new ItemInfo();
+        else {
+            PublicData.getInstance.playerEquip.rightHand =
+                new PlayerEquip().rightHand;
+        }
+    }
+    setIsEquip(mainType, subType?, thirdType?) {
+        if (mainType == EquipPartEnum.ring) {
+            if (PublicData.getInstance.playerEquip.ring[9].ID != -1)
+                PublicData.getInstance.userItem.userEquip[
+                    PublicData.getInstance.playerEquip.ring[9].ID
+                ].isEquip = false;
+        }
+        if (PublicData.getInstance.playerEquip[mainType].ID != -1)
+            PublicData.getInstance.userItem.userEquip[
+                PublicData.getInstance.playerEquip[mainType].ID
+            ].isEquip = false;
+
+        if (subType)
+            if (PublicData.getInstance.playerEquip[subType].ID != -1)
+                PublicData.getInstance.userItem.userEquip[
+                    PublicData.getInstance.playerEquip[subType].ID
+                ].isEquip = false;
+
+        if (thirdType == EquipPartEnum.twoHand)
+            subType = EquipPartEnum.rightHand;
+        else if (thirdType == EquipPartEnum.suit)
+            subType = EquipPartEnum.topCloth;
+
+        for (let type in EquipPart.getInstance[thirdType])
+            if (
+                PublicData.getInstance.playerEquip[subType].ID != -1 &&
+                PublicData.getInstance.playerEquip[subType].Type == type
+            )
+                PublicData.getInstance.userItem.userEquip[
+                    PublicData.getInstance.playerEquip[subType].ID
+                ].isEquip = false;
     }
 }

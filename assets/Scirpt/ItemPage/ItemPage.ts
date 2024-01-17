@@ -1,4 +1,4 @@
-import { Node, Prefab, _decorator, warn } from "cc";
+import { Node, Prefab, Size, UITransform, _decorator, v2, warn } from "cc";
 import EasyCode from "../../Model/EasyCode";
 import { NodePoolManager } from "../../Model/NodePoolMng/NodePoolMng";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
@@ -21,6 +21,12 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
     sozai: Prefab;
     @property(Prefab)
     use: Prefab;
+    @property(UITransform)
+    scrollView: UITransform;
+    @property(UITransform)
+    view: UITransform;
+    type: string;
+
     protected onLoad(): void {
         super.onLoad();
         this.hide();
@@ -28,42 +34,22 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
         NodePoolManager.getInstance.init(`equipment`, this.equipment, 1);
         NodePoolManager.getInstance.init(`use`, this.use, 1);
         this.setEvent(EventEnum.refreshItemPage, this.refreshItemPage);
+        this.setEvent(EventEnum.setScrollViewHeight, this.setScrollViewHeight);
     }
     show(...any: any[]): void {
         super.show();
-        PanelMessage.instance.hide();
-        SaveAndLoad.getInstance.loadItemData();
-        EasyCode.getInstance.putInPool(`sozai`);
-        EasyCode.getInstance.putInPool(`equipment`);
-        EasyCode.getInstance.putInPool(`use`);
-        for (let i of PublicData.getInstance.userItem.userEquip) {
-            let item = EasyCode.getInstance
-                .getFromPool(`equipment`)
-                .getComponent(Equipment);
-            item.node.parent = this.content;
-            item.Name.string = i.Name;
-            item.Type.string = i.Type;
-
-            PublicData.getInstance.userItem.userEquip[
-                PublicData.getInstance.userItem.userEquip.indexOf(i)
-            ].ID = PublicData.getInstance.userItem.userEquip.indexOf(i);
-
-            item.info = i;
-        }
-        this.eventEmit(`init`);
-        SaveAndLoad.getInstance.saveItemData(
-            PublicData.getInstance.userItem.userEquip,
-            DataKey.UserEquipKey
-        );
-        PanelMessage.instance.nowType = `equipment`;
+        this.type = `Equipment`;
+        this.selectType(null);
     }
-    selectType(e) {
+    selectType(e?) {
+        if (e != null) this.type = e.target.name;
         PanelMessage.instance.hide();
+        this.setScrollViewHeight();
         SaveAndLoad.getInstance.loadItemData();
         EasyCode.getInstance.putInPool(`sozai`);
         EasyCode.getInstance.putInPool(`equipment`);
         EasyCode.getInstance.putInPool(`use`);
-        switch (e.target.name) {
+        switch (this.type) {
             case `Equipment`:
                 for (let i of PublicData.getInstance.userItem.userEquip) {
                     let item = EasyCode.getInstance
@@ -167,6 +153,19 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                 }
                 PanelMessage.instance.nowType = `use`;
                 break;
+        }
+    }
+    setScrollViewHeight() {
+        if (PanelMessage.instance.node.active) {
+            this.scrollView.setContentSize(
+                new Size(this.scrollView.width, 1150)
+            );
+            this.view.setContentSize(new Size(this.view.width, 1150));
+        } else {
+            this.scrollView.setContentSize(
+                new Size(this.scrollView.width, 1600)
+            );
+            this.view.setContentSize(new Size(this.view.width, 1600));
         }
     }
 }

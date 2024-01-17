@@ -4,6 +4,7 @@ import { ItemInfo } from "../DataBase/ItemInfo";
 import PanelMessage from "./PanelMessage";
 import { SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { PublicData } from "../DataBase/PublicData";
+import { EventEnum } from "../Enum/EventEnum";
 
 const { ccclass, property } = _decorator;
 @ccclass("Equipment")
@@ -26,6 +27,7 @@ export default class Equipment extends BaseComponent {
     }
     openInfo() {
         PanelMessage.instance.switchPanelMessageEquip(this);
+        this.eventEmit(EventEnum.setScrollViewHeight)
     }
     setEuqipText(type) {
         if (this.Type == type) this.Equip.string = `裝備`;

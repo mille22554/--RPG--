@@ -30,7 +30,9 @@ class rightHand {
 class leftHand {
     小圓盾;
 }
-class ring {}
+class ring {
+    盔甲;
+}
 class twoHand {
     大盾;
     長杖;

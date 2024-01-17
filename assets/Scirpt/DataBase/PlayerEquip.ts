@@ -14,7 +14,18 @@ export default class PlayerEquip {
     arm = new ItemInfo();
     glove = new ItemInfo();
     necklace = new ItemInfo();
-    ring = [new ItemInfo()];
+    ring = [
+        new ItemInfo(),
+        new ItemInfo(),
+        new ItemInfo(),
+        new ItemInfo(),
+        new ItemInfo(),
+        new ItemInfo(),
+        new ItemInfo(),
+        new ItemInfo(),
+        new ItemInfo(),
+        new ItemInfo(),
+    ];
     mask = new ItemInfo();
     eye = new ItemInfo();
     cloak = new ItemInfo();
