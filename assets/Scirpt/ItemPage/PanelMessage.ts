@@ -98,19 +98,24 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     }
     EquipORUse() {
         SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadPlayerEquipData();
         SaveAndLoad.getInstance.loadItemData();
         switch (this.nowType) {
             case `equipment`:
-                this.equip();
+                PublicData.getInstance.userItem.userEquip[
+                    this.nowItemClass.info.ID
+                ].isEquip = this.nowItemClass.info.isEquip =
+                    !this.nowItemClass.info.isEquip;
+                this.equip(this.nowItemClass);
                 break;
             case `use`:
                 this.use();
                 break;
         }
     }
-    equip() {
-        SetUserEquip.getInstance.set(this.nowItemClass);
-        this.Equip.string = this.nowItemClass.Equip.string;
+    equip(_class) {
+        SetUserEquip.getInstance.set(_class);
+        this.Equip.string = _class.Equip.string;
 
         SaveAndLoad.getInstance.saveUserData(
             PublicData.getInstance.userData,
@@ -118,6 +123,10 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         );
         SaveAndLoad.getInstance.savePlayerEquipData(
             PublicData.getInstance.playerEquip
+        );
+        SaveAndLoad.getInstance.saveItemData(
+            PublicData.getInstance.userItem.userEquip,
+            DataKey.UserEquipKey
         );
         this.eventEmit(EventEnum.refreshItemPage);
     }

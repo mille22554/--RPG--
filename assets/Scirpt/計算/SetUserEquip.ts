@@ -1,16 +1,19 @@
-import { warn } from "cc";
+import { Node, warn } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import { ItemInfo } from "../DataBase/ItemInfo";
 import PlayerEquip from "../DataBase/PlayerEquip";
 import { PublicData } from "../DataBase/PublicData";
+import { UserEuqipInfo } from "../DataBase/UserData";
 import { EquipmentName } from "../Enum/EquipmentName";
 import Equipment from "../ItemPage/Equipment";
+import { EquipPart } from "../DataBase/EquipPart";
 
 export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
     item: Equipment;
+    content: Node;
     set(item) {
         this.item = item;
-        if (this.item.Equip.string == `裝備`) {
+        if (this.item.info.isEquip) {
             switch (item.info.Type) {
                 case EquipmentName.E0:
                 case EquipmentName.E3:
@@ -72,7 +75,6 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
                     this.belt(item.info);
                     break;
             }
-            this.item.Equip.string = `裝備中`;
         } else {
             switch (item.info.Type) {
                 case EquipmentName.E0:
@@ -151,20 +153,63 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
                         new PlayerEquip().belt;
                     break;
             }
-            this.item.Equip.string = `裝備`;
         }
+        this.setUserEquipAllInfo();
+    }
+    setUserEquipAllInfo() {
+        let info = new UserEuqipInfo();
+        for (let part in new PlayerEquip())
+            for (let ability in new UserEuqipInfo()) {
+                if (part == `ring`)
+                    for (let i of PublicData.getInstance.playerEquip[part])
+                        info[ability] += i[ability];
+                else
+                    info[ability] +=
+                        PublicData.getInstance.playerEquip[part][ability];
+            }
+        PublicData.getInstance.userEuqipInfo = info;
     }
     rightHand(info: ItemInfo) {
-        if (PublicData.getInstance.userData.isTwoHand) {
+        if (
+            PublicData.getInstance.userData.isTwoHand ||
+            info.Type == EquipmentName.E13
+        ) {
             this.leftHand(info);
             return;
         }
+
+        if (PublicData.getInstance.playerEquip.rightHand.ID != -1)
+            PublicData.getInstance.userItem.userEquip[
+                PublicData.getInstance.playerEquip.rightHand.ID
+            ].isEquip = false;
         PublicData.getInstance.playerEquip.rightHand = info;
     }
     leftHand(info: ItemInfo) {
+        if (PublicData.getInstance.playerEquip.leftHand.ID != -1)
+            PublicData.getInstance.userItem.userEquip[
+                PublicData.getInstance.playerEquip.leftHand.ID
+            ].isEquip = false;
+        for (let type in EquipPart.getInstance.twoHand)
+            if (
+                PublicData.getInstance.playerEquip.rightHand.ID != -1 &&
+                PublicData.getInstance.playerEquip.rightHand.Type == type
+            )
+                PublicData.getInstance.userItem.userEquip[
+                    PublicData.getInstance.playerEquip.rightHand.ID
+                ].isEquip = false;
         PublicData.getInstance.playerEquip.leftHand = info;
     }
     twoHand(info: ItemInfo) {
+        if (PublicData.getInstance.playerEquip.rightHand.ID != -1)
+            PublicData.getInstance.userItem.userEquip[
+                PublicData.getInstance.playerEquip.rightHand.ID
+            ].isEquip = false;
+
+        if (PublicData.getInstance.playerEquip.leftHand.ID != -1)
+            PublicData.getInstance.userItem.userEquip[
+                PublicData.getInstance.playerEquip.leftHand.ID
+            ].isEquip = false;
+
         PublicData.getInstance.playerEquip.rightHand = info;
         PublicData.getInstance.playerEquip.leftHand = new ItemInfo();
     }

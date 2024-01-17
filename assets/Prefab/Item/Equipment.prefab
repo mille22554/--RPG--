@@ -659,10 +659,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "1e387znuxFDQo1uDQVDC2BP",
-    "handler": "BackHome",
+    "_componentId": "a1abf8Q1bxKqYrRZ6ROR5ci",
+    "handler": "btnEquip",
     "customEventData": ""
   },
   {

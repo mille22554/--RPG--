@@ -1,9 +1,8 @@
-import { _decorator, sys, warn } from "cc";
+import { _decorator, sys } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
-import { ItemType } from "./ItemInfo";
+import PlayerEquip from "./PlayerEquip";
 import { PublicData } from "./PublicData";
 import { ExtraPoint, UserData } from "./UserData";
-import PlayerEquip from "./PlayerEquip";
 const { ccclass, property } = _decorator;
 
 @ccclass("SaveAndLoad")
@@ -34,6 +33,10 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             userData == null ? new UserData() : userData,
             userExtra == null ? new ExtraPoint() : userExtra
         );
+        if (userData == null || userExtra == null) {
+            this.loadUserData();
+            return;
+        }
         userData = JSON.parse(jsonData) as UserData;
         userExtra = JSON.parse(jsonExtra) as ExtraPoint;
         PublicData.getInstance.userData = userData;
@@ -73,6 +76,10 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
                 Data == null ? this.firstLogin(key, Data) : Data,
                 key
             );
+            if (Data == null) {
+                this.loadItemData();
+                return;
+            }
             Data = JSON.parse(jsonData);
             PublicData.getInstance.userItem[key] = Data;
         }
@@ -106,7 +113,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             this.loadPlayerEquipData();
             return;
         }
-        for (let key in PlayerEquip)
+        for (let key in new PlayerEquip())
             PublicData.getInstance.playerEquip[key] = Data[key];
     }
     //#endregion

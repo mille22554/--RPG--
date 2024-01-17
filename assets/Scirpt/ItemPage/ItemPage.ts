@@ -43,11 +43,14 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
             item.node.parent = this.content;
             item.Name.string = i.Name;
             item.Type.string = i.Type;
+
             PublicData.getInstance.userItem.userEquip[
                 PublicData.getInstance.userItem.userEquip.indexOf(i)
-            ].Num = PublicData.getInstance.userItem.userEquip.indexOf(i);
+            ].ID = PublicData.getInstance.userItem.userEquip.indexOf(i);
+
             item.info = i;
         }
+        this.eventEmit(`init`);
         SaveAndLoad.getInstance.saveItemData(
             PublicData.getInstance.userItem.userEquip,
             DataKey.UserEquipKey
@@ -69,8 +72,14 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                     item.node.parent = this.content;
                     item.Name.string = i.Name;
                     item.Type.string = i.Type;
+
+                    PublicData.getInstance.userItem.userEquip[
+                        PublicData.getInstance.userItem.userEquip.indexOf(i)
+                    ].ID = PublicData.getInstance.userItem.userEquip.indexOf(i);
+
                     item.info = i;
                 }
+                this.eventEmit(`init`);
                 PanelMessage.instance.nowType = `equipment`;
                 break;
             case `Sozai`:
@@ -108,11 +117,9 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
         }
     }
     refreshItemPage() {
-        let _class;
         EasyCode.getInstance.putInPool(PanelMessage.instance.nowType);
         switch (PanelMessage.instance.nowType) {
             case `equipment`:
-                _class = Equipment;
                 for (let i of PublicData.getInstance.userItem.userEquip) {
                     let item = EasyCode.getInstance
                         .getFromPool(`equipment`)
@@ -121,11 +128,12 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                     item.Name.string = i.Name;
                     item.Type.string = i.Type;
                     item.info = i;
+                    // warn(item)
                 }
+                this.eventEmit(`init`);
                 PanelMessage.instance.nowType = `equipment`;
                 break;
             case `sozai`:
-                _class = Sozai;
                 for (let i in PublicData.getInstance.userItem.userDropItem) {
                     if (
                         PublicData.getInstance.userItem.userDropItem[i].Num == 0
@@ -133,7 +141,7 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                         continue;
                     let item = EasyCode.getInstance
                         .getFromPool(PanelMessage.instance.nowType)
-                        .getComponent(_class);
+                        .getComponent(Sozai);
                     item.node.parent = this.content;
                     item[
                         `Num`
@@ -145,7 +153,6 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                 }
                 break;
             case `use`:
-                _class = UseItem;
                 for (let i in PublicData.getInstance.userItem.userUseItem) {
                     if (PublicData.getInstance.userItem.userUseItem[i].Num == 0)
                         continue;

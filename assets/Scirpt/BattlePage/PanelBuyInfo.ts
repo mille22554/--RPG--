@@ -86,7 +86,7 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
                         PublicData.getInstance.userItem.userEquip.push(
                             this.nowItemInfo
                         );
-                        this.nowItemInfo.Num =
+                        this.nowItemInfo.ID =
                             PublicData.getInstance.userItem.userEquip.indexOf(
                                 this.nowItemInfo
                             );

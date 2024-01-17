@@ -37,3 +37,13 @@ export class ExtraPoint {
     Agi: number = 0;
     Lux: number = 0;
 }
+export class UserEuqipInfo{
+    AD = 0;
+    AP = 0;
+    DEF = 0;
+    MDF = 0;
+    Dodge = 0;
+    Critical = 0;
+    Speed = 0;
+    Lucky = 0;
+}
