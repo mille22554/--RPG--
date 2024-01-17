@@ -66,7 +66,6 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
         this.Gold.string = `$ ${info.Gold.toString()}`;
     }
     buy() {
-        warn(`123`);
         SaveAndLoad.getInstance.loadUserData();
         SaveAndLoad.getInstance.loadItemData();
         for (let type in PublicData.getInstance.item)
@@ -87,6 +86,10 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
                         PublicData.getInstance.userItem.userEquip.push(
                             this.nowItemInfo
                         );
+                        this.nowItemInfo.ID =
+                            PublicData.getInstance.userItem.userEquip.indexOf(
+                                this.nowItemInfo
+                            );
                         SaveAndLoad.getInstance.saveItemData(
                             PublicData.getInstance.userItem.userEquip,
                             DataKey.UserEquipKey

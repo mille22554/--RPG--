@@ -1,8 +1,7 @@
 import { Label, _decorator } from "cc";
 import BaseComponent from "../../Model/BaseComponent";
-import { PublicData } from "../DataBase/PublicData";
-import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { ItemInfo } from "../DataBase/ItemInfo";
+import { EventEnum } from "../Enum/EventEnum";
 import PanelMessage from "./PanelMessage";
 
 const { ccclass, property } = _decorator;
@@ -14,6 +13,7 @@ export default class Sozai extends BaseComponent {
     Num: Label;
     info: ItemInfo;
     openInfo() {
-        PanelMessage.instance.switchPanelMessageSozai(this.info);
+        PanelMessage.instance.switchPanelMessageSozai(this);
+        this.eventEmit(EventEnum.setScrollViewHeight)
     }
 }

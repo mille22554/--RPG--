@@ -4,4 +4,6 @@ export enum EventEnum {
     SetZoneName = `SetZoneName`,
     setBtnLabel = `setBtnLabel`,
     refreshItemPage = `refreshItemPage`,
+    setEuqipText = `setEuqipText`,
+    setScrollViewHeight = `setScrollViewHeight`,
 }

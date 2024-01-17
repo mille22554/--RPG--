@@ -26,6 +26,7 @@ export class UserData {
     isBattle = false;
     isField = false;
     isResting = false;
+    isTwoHand = false;
     ZoneLevel = 1;
 }
 export class ExtraPoint {
@@ -35,4 +36,14 @@ export class ExtraPoint {
     Int: number = 0;
     Agi: number = 0;
     Lux: number = 0;
+}
+export class UserEuqipInfo{
+    AD = 0;
+    AP = 0;
+    DEF = 0;
+    MDF = 0;
+    Dodge = 0;
+    Critical = 0;
+    Speed = 0;
+    Lucky = 0;
 }

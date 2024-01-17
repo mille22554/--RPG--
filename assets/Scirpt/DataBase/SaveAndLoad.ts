@@ -1,6 +1,6 @@
-import { _decorator, sys, warn } from "cc";
+import { _decorator, sys } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
-import { ItemType } from "./ItemInfo";
+import PlayerEquip from "./PlayerEquip";
 import { PublicData } from "./PublicData";
 import { ExtraPoint, UserData } from "./UserData";
 const { ccclass, property } = _decorator;
@@ -11,6 +11,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         return new Promise((resolve) => {
             this.loadUserData();
             this.loadItemData();
+            this.loadPlayerEquipData();
             resolve();
         });
     }
@@ -32,6 +33,10 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             userData == null ? new UserData() : userData,
             userExtra == null ? new ExtraPoint() : userExtra
         );
+        if (userData == null || userExtra == null) {
+            this.loadUserData();
+            return;
+        }
         userData = JSON.parse(jsonData) as UserData;
         userExtra = JSON.parse(jsonExtra) as ExtraPoint;
         PublicData.getInstance.userData = userData;
@@ -51,10 +56,13 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
     }
     //#endregion
     //#region 物品
-    saveItemData(data, key: string) {
-        const Data = data;
-        const jsonData = JSON.stringify(Data);
-        sys.localStorage.setItem(key, jsonData);
+    async saveItemData(data, key: string): Promise<void> {
+        return new Promise((resolve) => {
+            const Data = data;
+            const jsonData = JSON.stringify(Data);
+            sys.localStorage.setItem(key, jsonData);
+            resolve();
+        });
     }
     loadItemData() {
         for (let key of [
@@ -68,6 +76,10 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
                 Data == null ? this.firstLogin(key, Data) : Data,
                 key
             );
+            if (Data == null) {
+                this.loadItemData();
+                return;
+            }
             Data = JSON.parse(jsonData);
             PublicData.getInstance.userItem[key] = Data;
         }
@@ -86,6 +98,25 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         return Data;
     }
     //#endregion
+    //#region 裝備中
+    savePlayerEquipData(data) {
+        const Data = data;
+        const jsonData = JSON.stringify(Data);
+        sys.localStorage.setItem(DataKey.PlayerEquipKey, jsonData);
+    }
+    loadPlayerEquipData() {
+        const jsonData = sys.localStorage.getItem(DataKey.PlayerEquipKey);
+        let Data = JSON.parse(jsonData);
+        this.savePlayerEquipData(Data == null ? new PlayerEquip() : Data);
+        Data = JSON.parse(jsonData);
+        if (Data == null) {
+            this.loadPlayerEquipData();
+            return;
+        }
+        for (let key in new PlayerEquip())
+            PublicData.getInstance.playerEquip[key] = Data[key];
+    }
+    //#endregion
 }
 export enum DataKey {
     userDataKey = "userData",
@@ -94,4 +125,5 @@ export enum DataKey {
     UserDropItemKey = "userDropItem",
     UserEquipKey = "userEquip",
     UserUseItemKey = "userUseItem",
+    PlayerEquipKey = "playerEquip",
 }

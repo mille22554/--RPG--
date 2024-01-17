@@ -16,18 +16,24 @@ export default class PanelMarket extends BaseSingletonComponent<PanelMarket>() {
     content: Node;
     protected onLoad(): void {
         super.onLoad();
-        this.hide();
         NodePoolManager.getInstance.init(`souhin`, this.souhin, 1);
+    }
+    protected start(): void {
+        this.hide();
     }
     show(): void {
         super.show();
         this.openTownShop();
     }
+    hide(): void {
+        super.hide();
+        PanelBuyInfo.instance.hide();
+    }
     openTownShop() {
         this.loadEquipmentItem();
     }
     loadEquipmentItem() {
-        PanelBuyInfo.instance.hide()
+        PanelBuyInfo.instance.hide();
         EasyCode.getInstance.putInPool(`souhin`);
         SaveAndLoad.getInstance.loadUserData();
         for (let key in PublicData.getInstance.item.equipment) {
@@ -43,7 +49,7 @@ export default class PanelMarket extends BaseSingletonComponent<PanelMarket>() {
         }
     }
     loadUseItem() {
-        PanelBuyInfo.instance.hide()
+        PanelBuyInfo.instance.hide();
         EasyCode.getInstance.putInPool(`souhin`);
         SaveAndLoad.getInstance.loadUserData();
         for (let key in PublicData.getInstance.item.useItem) {

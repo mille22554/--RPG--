@@ -1,4 +1,5 @@
 export class ItemInfo {
+    ID: number = -1;
     Type: string = ``;
     Name: string = ``;
     AD: number = 0;
@@ -15,6 +16,7 @@ export class ItemInfo {
     HP: number = 0;
     MP: number = 0;
     Stamina: number = 0;
+    isEquip: boolean = false;
 }
 export class ItemType {
     dropItem = new DropItem();

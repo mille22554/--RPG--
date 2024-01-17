@@ -33,14 +33,6 @@ export class Battle extends BaseSingleton<Battle>() {
                     }
                     this.PlayerSpeed += PublicData.getInstance.userData.Speed;
                 } else {
-                    if (
-                        Number(
-                            PublicData.getInstance.userData.Stamina.split(
-                                `/`
-                            )[0]
-                        ) == 0
-                    )
-                        this.PlayerSpeed = 0;
                     if (!this.isPlayerTurn) {
                         for (let i of PublicData.getInstance.mobData)
                             PanelLog.instance.addLog(
