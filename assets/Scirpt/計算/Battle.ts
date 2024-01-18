@@ -141,6 +141,8 @@ export class Battle extends BaseSingleton<Battle>() {
         PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
     }
     mobAction(target: number) {
+        SaveAndLoad.getInstance.loadUserData()
+        
         this.mobSpeed[target] -= 1500;
         let hp = Number(PublicData.getInstance.userData.HP.split(`/`)[0]),
             critical =
