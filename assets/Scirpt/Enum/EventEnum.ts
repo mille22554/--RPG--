@@ -5,5 +5,6 @@ export enum EventEnum {
     setBtnLabel = `setBtnLabel`,
     refreshItemPage = `refreshItemPage`,
     setEuqipText = `setEuqipText`,
-    setScrollViewHeight = `setScrollViewHeight`,
+    setScrollViewHeightIP = `setScrollViewHeightIP`,
+    setScrollViewHeightPM = `setScrollViewHeightPM`,
 }

@@ -4,20 +4,18 @@ import {
     Size,
     UITransform,
     _decorator,
-    find,
-    v2,
-    warn,
+    find
 } from "cc";
 import EasyCode from "../../Model/EasyCode";
 import { NodePoolManager } from "../../Model/NodePoolMng/NodePoolMng";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
 import { PublicData } from "../DataBase/PublicData";
-import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
+import { SaveAndLoad } from "../DataBase/SaveAndLoad";
+import { EventEnum } from "../Enum/EventEnum";
 import Equipment from "./Equipment";
 import PanelMessage from "./PanelMessage";
 import Sozai from "./Sozai";
 import UseItem from "./UseItem";
-import { EventEnum } from "../Enum/EventEnum";
 
 const { ccclass, property } = _decorator;
 @ccclass("ItemPage")
@@ -43,7 +41,7 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
         NodePoolManager.getInstance.init(`equipment`, this.equipment, 1);
         NodePoolManager.getInstance.init(`use`, this.use, 1);
         this.setEvent(EventEnum.refreshItemPage, this.refreshItemPage);
-        this.setEvent(EventEnum.setScrollViewHeight, this.setScrollViewHeight);
+        this.setEvent(EventEnum.setScrollViewHeightIP, this.setScrollViewHeight);
     }
     show(...any: any[]): void {
         super.show();

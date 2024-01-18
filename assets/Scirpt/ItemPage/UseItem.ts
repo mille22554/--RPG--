@@ -14,6 +14,6 @@ export default class UseItem extends BaseComponent {
     info: ItemInfo;
     openInfo() {
         PanelMessage.instance.switchPanelMessageUse(this);
-        this.eventEmit(EventEnum.setScrollViewHeight)
+        this.eventEmit(EventEnum.setScrollViewHeightIP)
     }
 }
