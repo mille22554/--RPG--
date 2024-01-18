@@ -7,6 +7,8 @@ import { SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { EventEnum } from "../Enum/EventEnum";
 import { SetMobInfo } from "./SetMobInfo";
 import { SetUserInfo } from "./SetUserInfo";
+import { EquipmentType } from "../Enum/EquipmentType";
+import { BAIDU } from "cc/env";
 
 export class Battle extends BaseSingleton<Battle>() {
     speedTimer: number;
@@ -20,7 +22,7 @@ export class Battle extends BaseSingleton<Battle>() {
                     for (let i of PublicData.getInstance.mobData) {
                         if (
                             this.mobSpeed[
-                                PublicData.getInstance.mobData.indexOf(i)
+                            PublicData.getInstance.mobData.indexOf(i)
                             ] >= 1500
                         )
                             this.mobAction(
@@ -57,8 +59,8 @@ export class Battle extends BaseSingleton<Battle>() {
             dmg = Math.floor(
                 (PublicData.getInstance.userData.Lux +
                     PublicData.getInstance.userExtra.Lux) *
-                    2 *
-                    randomRange(0.5, 1)
+                2 *
+                randomRange(0.5, 1)
             ),
             Stamina = Number(
                 PublicData.getInstance.userData.Stamina.split(`/`)[0]
@@ -67,9 +69,8 @@ export class Battle extends BaseSingleton<Battle>() {
         this.PlayerSpeed -= 1500;
         this.isPlayerTurn = false;
         Stamina -= 1;
-        PublicData.getInstance.userData.Stamina = `${Stamina}/${
-            PublicData.getInstance.userData.Stamina.split(`/`)[1]
-        }`;
+        PublicData.getInstance.userData.Stamina = `${Stamina}/${PublicData.getInstance.userData.Stamina.split(`/`)[1]
+            }`;
         //幸運判定
         if (PublicData.getInstance.userData.Lucky > randomRange(0, 1)) {
             hp -= dmg;
@@ -95,12 +96,27 @@ export class Battle extends BaseSingleton<Battle>() {
             );
             return;
         }
+        //武器種類判定
+        let base: number
+        switch (PublicData.getInstance.playerEquip.rightHand.Type) {
+            case EquipmentType.E3:
+            case EquipmentType.E4:
+                base = PublicData.getInstance.userData.AP
+                break;
+            case EquipmentType.E9:
+            case EquipmentType.E10:
+                base = (PublicData.getInstance.userData.AP + PublicData.getInstance.userData.AD) / 2
+                break;
+            default:
+                base = PublicData.getInstance.userData.AD
+                break;
+        }
         //傷害判定
         dmg = Math.floor(
-            PublicData.getInstance.userData.AD *
-                randomRange(0.5, 1) *
-                critical -
-                PublicData.getInstance.mobData[target].DEF
+            base *
+            randomRange(0.5, 1) *
+            critical -
+            PublicData.getInstance.mobData[target].DEF
         );
         if (dmg < 0) dmg = 0;
         hp -= dmg;
@@ -142,18 +158,18 @@ export class Battle extends BaseSingleton<Battle>() {
     }
     mobAction(target: number) {
         SaveAndLoad.getInstance.loadUserData()
-        
+
         this.mobSpeed[target] -= 1500;
         let hp = Number(PublicData.getInstance.userData.HP.split(`/`)[0]),
             critical =
                 PublicData.getInstance.mobData[target].Critical >
-                randomRange(0, 1)
+                    randomRange(0, 1)
                     ? 2
                     : 1,
             dmg = Math.floor(
                 PublicData.getInstance.mobData[target].Lux *
-                    2 *
-                    randomRange(0.5, 1)
+                2 *
+                randomRange(0.5, 1)
             ),
             random = randomRange(0, 1);
         //幸運判定
@@ -179,9 +195,9 @@ export class Battle extends BaseSingleton<Battle>() {
         //傷害判定
         dmg = Math.floor(
             PublicData.getInstance.mobData[target].AD *
-                randomRange(0.5, 1) *
-                critical -
-                PublicData.getInstance.userData.DEF
+            randomRange(0.5, 1) *
+            critical -
+            PublicData.getInstance.userData.DEF
         );
         if (dmg < 0) dmg = 0;
         hp -= dmg;
@@ -196,9 +212,8 @@ export class Battle extends BaseSingleton<Battle>() {
             );
         if (this.deathAction(hp, PublicData.getInstance.userData.Name, true))
             return;
-        PublicData.getInstance.userData.HP = `${hp}/${
-            PublicData.getInstance.userData.HP.split(`/`)[1]
-        }`;
+        PublicData.getInstance.userData.HP = `${hp}/${PublicData.getInstance.userData.HP.split(`/`)[1]
+            }`;
         //戰鬥結束存檔
         SaveAndLoad.getInstance.saveUserData(
             PublicData.getInstance.userData,
@@ -221,18 +236,16 @@ export class Battle extends BaseSingleton<Battle>() {
                 );
                 Stamina = 0;
 
-                PublicData.getInstance.userData.HP = `${hp}/${
-                    PublicData.getInstance.userData.HP.split(`/`)[1]
-                }`;
-                PublicData.getInstance.userData.Stamina = `${Stamina}/${
-                    PublicData.getInstance.userData.Stamina.split(`/`)[1]
-                }`;
+                PublicData.getInstance.userData.HP = `${hp}/${PublicData.getInstance.userData.HP.split(`/`)[1]
+                    }`;
+                PublicData.getInstance.userData.Stamina = `${Stamina}/${PublicData.getInstance.userData.Stamina.split(`/`)[1]
+                    }`;
             } else {
                 PanelLog.instance.addLog(`${name}被擊退了`, Color.GREEN);
                 let exp =
-                        Number(
-                            PublicData.getInstance.userData.Exp.split(`/`)[0]
-                        ) + PublicData.getInstance.mobData[mobTarget].Level,
+                    Number(
+                        PublicData.getInstance.userData.Exp.split(`/`)[0]
+                    ) + PublicData.getInstance.mobData[mobTarget].Level,
                     MaxExp = Number(
                         PublicData.getInstance.userData.Exp.split(`/`)[1]
                     );
