@@ -36,6 +36,11 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
     show(...any: any[]): void {
         super.show();
         SaveAndLoad.getInstance.loadItemData();
+        this.eventEmit(EventEnum.setScrollViewHeightPM)
+    }
+    hide(): void {
+        super.hide()
+        this.eventEmit(EventEnum.setScrollViewHeightPM)
     }
     switchEquip(info: ItemInfo) {
         this.show();

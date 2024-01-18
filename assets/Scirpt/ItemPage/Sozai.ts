@@ -14,6 +14,6 @@ export default class Sozai extends BaseComponent {
     info: ItemInfo;
     openInfo() {
         PanelMessage.instance.switchPanelMessageSozai(this);
-        this.eventEmit(EventEnum.setScrollViewHeight)
+        this.eventEmit(EventEnum.setScrollViewHeightIP)
     }
 }

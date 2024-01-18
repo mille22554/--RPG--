@@ -1,4 +1,4 @@
-export enum EquipmentName {
+export enum EquipmentType {
     E0 = `短刀`,
     E1 = `小圓盾`,
     E2 = `大盾`,

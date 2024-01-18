@@ -102,6 +102,8 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         SaveAndLoad.getInstance.loadItemData();
         switch (this.nowType) {
             case `equipment`:
+                if (PublicData.getInstance.userData.isBattle) return
+                
                 PublicData.getInstance.userItem.userEquip[
                     this.nowItemClass.info.ID
                 ].isEquip = this.nowItemClass.info.isEquip =

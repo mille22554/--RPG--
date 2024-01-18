@@ -1,10 +1,10 @@
-import { Label, _decorator, warn } from "cc";
+import { Label, _decorator } from "cc";
 import BaseComponent from "../../Model/BaseComponent";
 import { ItemInfo } from "../DataBase/ItemInfo";
-import PanelMessage from "./PanelMessage";
-import { SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { PublicData } from "../DataBase/PublicData";
+import { SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { EventEnum } from "../Enum/EventEnum";
+import PanelMessage from "./PanelMessage";
 
 const { ccclass, property } = _decorator;
 @ccclass("Equipment")
@@ -27,7 +27,7 @@ export default class Equipment extends BaseComponent {
     }
     openInfo() {
         PanelMessage.instance.switchPanelMessageEquip(this);
-        this.eventEmit(EventEnum.setScrollViewHeight)
+        this.eventEmit(EventEnum.setScrollViewHeightIP)
     }
     setEuqipText(type) {
         if (this.Type == type) this.Equip.string = `裝備`;
@@ -36,6 +36,7 @@ export default class Equipment extends BaseComponent {
         SaveAndLoad.getInstance.loadUserData();
         SaveAndLoad.getInstance.loadPlayerEquipData();
         SaveAndLoad.getInstance.loadItemData();
+        if (PublicData.getInstance.userData.isBattle) return
         PublicData.getInstance.userItem.userEquip[this.info.ID].isEquip =
             this.info.isEquip = !this.info.isEquip;
         PanelMessage.instance.equip(this);
