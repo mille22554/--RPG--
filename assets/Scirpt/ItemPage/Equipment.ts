@@ -36,6 +36,7 @@ export default class Equipment extends BaseComponent {
         SaveAndLoad.getInstance.loadUserData();
         SaveAndLoad.getInstance.loadPlayerEquipData();
         SaveAndLoad.getInstance.loadItemData();
+        if (PublicData.getInstance.userData.isBattle) return
         PublicData.getInstance.userItem.userEquip[this.info.ID].isEquip =
             this.info.isEquip = !this.info.isEquip;
         PanelMessage.instance.equip(this);
