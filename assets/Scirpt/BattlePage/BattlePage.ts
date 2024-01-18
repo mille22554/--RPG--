@@ -139,6 +139,10 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
                 Battle.getInstance.PlayerSpeed -= 1500;
                 this.escape();
             }
+            if (Battle.getInstance.PlayerSpeed2 >= 1500) {
+                Battle.getInstance.PlayerSpeed2 -= 1500;
+                this.escape();
+            }
             return;
         }
         this.panelMessage.active = true;

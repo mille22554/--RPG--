@@ -13,6 +13,11 @@ export default class Zone extends BaseComponent {
     @property(Label)
     labelLV: Label;
     selectZone() {
+        let hp = Number(PublicData.getInstance.userData.HP.split(`/`)[0]),
+            Stamina = Number(
+                PublicData.getInstance.userData.Stamina.split(`/`)[0]
+            );
+        if (hp == 0 || Stamina == 0) return;
         EasyCode.getInstance.putInPool(`logItem`);
 
         SaveAndLoad.getInstance.loadUserData();

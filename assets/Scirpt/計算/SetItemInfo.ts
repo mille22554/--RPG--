@@ -18,14 +18,14 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                     item.Speed =
                     item.Gold =
                         1;
-                item.Critical = item.Dodge = item.Lucky = 0.01;
+                item.Critical = item.Dodge = item.Lucky = 0.001;
                 break;
             case DropItemName.DI1:
                 if (!item.Num) item.Num = 0;
                 item.AD = 3;
                 item.DEF = item.Speed = 1;
                 item.Gold = 2;
-                item.Critical = item.Dodge = item.Lucky = 0.01;
+                item.Critical = item.Dodge = item.Lucky = 0.001;
                 break;
             case DropItemName.DI2:
                 if (!item.Num) item.Num = 0;
@@ -33,13 +33,13 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                 item.MDF = 2;
                 item.Speed = 1;
                 item.Gold = 3;
-                item.Critical = item.Dodge = item.Lucky = 0.01;
+                item.Critical = item.Dodge = item.Lucky = 0.001;
                 break;
             case DropItemName.DI3:
                 if (!item.Num) item.Num = 0;
                 item.Speed = 2;
                 item.Gold = 4;
-                item.Critical = item.Dodge = item.Lucky = 0.02;
+                item.Critical = item.Dodge = item.Lucky = 0.002;
                 break;
             case DropItemName.DI4:
                 if (!item.Num) item.Num = 0;
@@ -52,7 +52,7 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
             case EquipmentType.E0:
                 item.AD = 5;
                 item.DEF = 3;
-                item.Critical = item.Dodge = item.Lucky = 0.05;
+                item.Critical = item.Dodge = item.Lucky = 0.005;
                 item.Speed = 10;
                 item.Gold = 100;
                 item.Durability = 100;
@@ -67,7 +67,7 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                 item.DEF = 30;
                 item.MDF = 20;
                 item.Speed = -10;
-                item.Dodge = -0.05;
+                item.Dodge = -0.005;
                 item.Gold = 500;
                 item.Durability = 100;
                 break;
@@ -98,13 +98,13 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                 break;
             case EquipmentType.E7:
                 item.AD = 8;
-                item.Critical = 0.1;
+                item.Critical = 0.01;
                 item.Gold = 100;
                 item.Durability = 100;
                 break;
             case EquipmentType.E8:
                 item.AD = 20;
-                item.Critical = 0.3;
+                item.Critical = 0.03;
                 item.Gold = 300;
                 item.Durability = 100;
                 break;
@@ -126,21 +126,21 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                 break;
             case EquipmentType.E11:
                 item.AD = 12;
-                item.Critical = item.Dodge = 0.1;
+                item.Critical = item.Dodge = 0.01;
                 item.Speed = 5;
                 item.Gold = 300;
                 item.Durability = 100;
                 break;
             case EquipmentType.E12:
                 item.AD = 8;
-                item.Dodge = 0.2;
+                item.Dodge = 0.02;
                 item.Speed = 5;
                 item.Gold = 300;
                 item.Durability = 100;
                 break;
             case EquipmentType.E13:
                 item.AD = 3;
-                item.Critical = item.Dodge = 0.1;
+                item.Critical = item.Dodge = 0.01;
                 item.Speed = 8;
                 item.Gold = 200;
                 item.Durability = 100;
@@ -155,7 +155,7 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
             case EquipmentType.E15:
                 item.DEF = 3;
                 item.MDF = 3;
-                item.Dodge = 0.05;
+                item.Dodge = 0.005;
                 item.Speed = 3;
                 item.Gold = 100;
                 item.Durability = 100;
@@ -170,7 +170,7 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
             case EquipmentType.E17:
                 item.DEF = 2;
                 item.MDF = 2;
-                item.Dodge = 0.1;
+                item.Dodge = 0.01;
                 item.Speed = 8;
                 item.Gold = 100;
                 item.Durability = 100;
@@ -184,23 +184,23 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
             case EquipmentType.E19:
                 item.DEF = 2;
                 item.MDF = 2;
-                item.Critical = 0.1;
+                item.Critical = 0.01;
                 item.Gold = 100;
                 item.Durability = 100;
                 break;
             case EquipmentType.E20:
-                item.Critical = 0.05;
+                item.Critical = 0.005;
                 item.Speed = 3;
                 item.Gold = 50;
                 item.Durability = 100;
                 break;
             case EquipmentType.E21:
-                item.Lucky = 0.05;
+                item.Lucky = 0.005;
                 item.Gold = 50;
                 item.Durability = 100;
                 break;
             case EquipmentType.E22:
-                item.Critical = item.Dodge = item.Lucky = 0.02;
+                item.Critical = item.Dodge = item.Lucky = 0.002;
                 item.Gold = 50;
                 item.Durability = 100;
                 break;
@@ -210,7 +210,7 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                 item.Durability = 100;
                 break;
             case EquipmentType.E24:
-                item.Dodge = 0.03;
+                item.Dodge = 0.003;
                 item.Gold = 50;
                 item.Durability = 100;
                 break;
@@ -220,7 +220,7 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                 item.Durability = 100;
                 break;
             case EquipmentType.E26:
-                item.Dodge = 0.06;
+                item.Dodge = 0.006;
                 item.Gold = 50;
                 item.Durability = 100;
                 break;

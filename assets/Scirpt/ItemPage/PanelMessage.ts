@@ -1,11 +1,9 @@
-import { Label, Node, _decorator, warn } from "cc";
+import { Label, Node, _decorator } from "cc";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
-import { ItemInfo } from "../DataBase/ItemInfo";
 import { PublicData } from "../DataBase/PublicData";
 import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { EventEnum } from "../Enum/EventEnum";
 import { SetUserEquip } from "../計算/SetUserEquip";
-import PlayerEquip from "../DataBase/PlayerEquip";
 
 const { ccclass, property } = _decorator;
 @ccclass("PanelMessage")
@@ -16,6 +14,8 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     Equip: Label;
     @property(Label)
     Type: Label;
+    @property(Label)
+    Durability: Label;
     @property(Label)
     AD: Label;
     @property(Label)
@@ -51,6 +51,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.nowItemClass = info;
         this.Name.string = info.info.Name;
         this.Type.string = info.info.Type;
+        this.Durability.string = `耐久 ${info.info.Durability.toString()}`;
         this.AD.string = `物攻 ${info.info.AD.toString()}`;
         this.DEF.string = `物防 ${info.info.DEF.toString()}`;
         this.AP.string = `魔攻 ${info.info.AP.toString()}`;
@@ -68,6 +69,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.nowItemClass = info;
         this.Name.string = info.info.Name;
         this.Type.string = ``;
+        this.Durability.string = ``;
         this.AD.string = ``;
         this.DEF.string = ``;
         this.AP.string = ``;
@@ -84,6 +86,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.nowItemClass = info;
         this.Name.string = info.info.Name;
         this.Type.string = ``;
+        this.Durability.string = ``;
         this.AD.string = ``;
         this.DEF.string = ``;
         this.AP.string = ``;
@@ -101,9 +104,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         SaveAndLoad.getInstance.loadPlayerEquipData();
         SaveAndLoad.getInstance.loadItemData();
         switch (this.nowType) {
-            case `equipment`:
-                if (PublicData.getInstance.userData.isBattle) return
-                
+            case `equipment`:                
                 PublicData.getInstance.userItem.userEquip[
                     this.nowItemClass.info.ID
                 ].isEquip = this.nowItemClass.info.isEquip =

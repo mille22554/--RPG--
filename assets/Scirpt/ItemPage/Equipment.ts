@@ -14,6 +14,8 @@ export default class Equipment extends BaseComponent {
     @property(Label)
     Equip: Label;
     @property(Label)
+    Durability: Label;
+    @property(Label)
     Type: Label;
     info: ItemInfo;
     protected start(): void {
@@ -36,7 +38,6 @@ export default class Equipment extends BaseComponent {
         SaveAndLoad.getInstance.loadUserData();
         SaveAndLoad.getInstance.loadPlayerEquipData();
         SaveAndLoad.getInstance.loadItemData();
-        if (PublicData.getInstance.userData.isBattle) return
         PublicData.getInstance.userItem.userEquip[this.info.ID].isEquip =
             this.info.isEquip = !this.info.isEquip;
         PanelMessage.instance.equip(this);

@@ -1,8 +1,9 @@
-import { _decorator, sys } from "cc";
+import { _decorator, sys, warn } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import PlayerEquip from "./PlayerEquip";
 import { PublicData } from "./PublicData";
 import { ExtraPoint, UserData } from "./UserData";
+import { ItemInfo } from "./ItemInfo";
 const { ccclass, property } = _decorator;
 
 @ccclass("SaveAndLoad")
@@ -12,6 +13,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             this.loadUserData();
             this.loadItemData();
             this.loadPlayerEquipData();
+            this.UpdateData();
             resolve();
         });
     }
@@ -52,6 +54,10 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
     loadMobData() {
         const jsonData = sys.localStorage.getItem(DataKey.mobDataKey);
         let Data = JSON.parse(jsonData);
+        if (Data == null) {
+            this.loadMobData();
+            return;
+        }
         PublicData.getInstance.mobData = Data;
     }
     //#endregion
@@ -115,6 +121,27 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         }
         for (let key in new PlayerEquip())
             PublicData.getInstance.playerEquip[key] = Data[key];
+    }
+    //#endregion
+    //#region 更新資料
+    UpdateData() {
+        let data;
+
+        data = new UserData();
+        for (let i in PublicData.getInstance.userData)
+            data[i] = PublicData.getInstance.userData[i];
+        PublicData.getInstance.userData = data;
+
+        data = new ExtraPoint();
+        for (let i in PublicData.getInstance.userExtra) {
+            data[i] = PublicData.getInstance.userExtra[i];
+        }
+        PublicData.getInstance.userExtra = data;
+
+        this.saveUserData(
+            PublicData.getInstance.userData,
+            PublicData.getInstance.userExtra
+        );
     }
     //#endregion
 }

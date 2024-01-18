@@ -61,6 +61,7 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                     item.node.parent = this.content;
                     item.Name.string = i.Name;
                     item.Type.string = i.Type;
+                    item.Durability.string = `耐久 ${i.Durability.toString()}`;
 
                     PublicData.getInstance.userItem.userEquip[
                         PublicData.getInstance.userItem.userEquip.indexOf(i)
@@ -128,6 +129,7 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                     item.node.parent = this.content;
                     item.Name.string = i.Name;
                     item.Type.string = i.Type;
+                    item.Durability.string = `耐久 ${i.Durability.toString()}`;
                     item.info = i;
                     // warn(item)
                 }

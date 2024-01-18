@@ -1,16 +1,10 @@
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 
 export class EquipPart extends BaseSingleton<EquipPart>() {
-    topCloth = new topCloth();
-    pants = new pants();
     suit = new suit();
     rightHand = new rightHand();
-    leftHand = new leftHand();
     twoHand = new twoHand();
-    ring = new ring();
 }
-class topCloth {}
-class pants {}
 class suit {}
 class rightHand {
     短刀;
@@ -26,12 +20,6 @@ class rightHand {
     長槍;
     弓箭;
     指虎;
-}
-class leftHand {
-    小圓盾;
-}
-class ring {
-    盔甲;
 }
 class twoHand {
     大盾;
