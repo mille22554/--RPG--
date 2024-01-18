@@ -1,4 +1,4 @@
-import { Color, randomRange, randomRangeInt } from "cc";
+import { Color, randomRange, randomRangeInt, warn } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import PanelLog from "../BattlePage/PanelLog";
 import { MyColor } from "../DataBase/MyColor";

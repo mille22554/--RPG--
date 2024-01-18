@@ -1,16 +1,9 @@
-import {
-    Node,
-    Prefab,
-    Size,
-    UITransform,
-    _decorator,
-    find
-} from "cc";
+import { Node, Prefab, Size, UITransform, _decorator, find } from "cc";
 import EasyCode from "../../Model/EasyCode";
 import { NodePoolManager } from "../../Model/NodePoolMng/NodePoolMng";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
 import { PublicData } from "../DataBase/PublicData";
-import { SaveAndLoad } from "../DataBase/SaveAndLoad";
+import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { EventEnum } from "../Enum/EventEnum";
 import Equipment from "./Equipment";
 import PanelMessage from "./PanelMessage";
@@ -41,7 +34,10 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
         NodePoolManager.getInstance.init(`equipment`, this.equipment, 1);
         NodePoolManager.getInstance.init(`use`, this.use, 1);
         this.setEvent(EventEnum.refreshItemPage, this.refreshItemPage);
-        this.setEvent(EventEnum.setScrollViewHeightIP, this.setScrollViewHeight);
+        this.setEvent(
+            EventEnum.setScrollViewHeightIP,
+            this.setScrollViewHeight
+        );
     }
     show(...any: any[]): void {
         super.show();
@@ -72,8 +68,12 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
 
                     item.info = i;
                 }
-                this.eventEmit(`init`);
+                this.eventEmit(EventEnum.init);
                 PanelMessage.instance.nowType = `equipment`;
+                SaveAndLoad.getInstance.saveItemData(
+                    PublicData.getInstance.userItem.userEquip,
+                    DataKey.UserEquipKey
+                );
                 break;
             case `Sozai`:
                 for (let i in PublicData.getInstance.userItem.userDropItem) {
@@ -91,6 +91,10 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                     item.info = PublicData.getInstance.userItem.userDropItem[i];
                 }
                 PanelMessage.instance.nowType = `sozai`;
+                SaveAndLoad.getInstance.saveItemData(
+                    PublicData.getInstance.userItem.userDropItem,
+                    DataKey.UserDropItemKey
+                );
                 break;
             case `Use`:
                 for (let i in PublicData.getInstance.userItem.userUseItem) {
@@ -106,6 +110,10 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                     item.info = PublicData.getInstance.userItem.userUseItem[i];
                 }
                 PanelMessage.instance.nowType = `use`;
+                SaveAndLoad.getInstance.saveItemData(
+                    PublicData.getInstance.userItem.userUseItem,
+                    DataKey.UserUseItemKey
+                );
                 break;
         }
     }
@@ -169,7 +177,7 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
             );
         if (!this.view)
             this.view = find(`view`, this.node).getComponent(UITransform);
-        
+
         if (PanelMessage.instance.node.active) {
             this.scrollView.setContentSize(
                 new Size(this.scrollView.width, 1150)

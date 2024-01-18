@@ -18,7 +18,7 @@ export default class Equipment extends BaseComponent {
     info: ItemInfo;
     protected start(): void {
         this.init();
-        this.setEvent(`init`, this.init);
+        this.setEvent(EventEnum.init, this.init);
     }
     init() {
         if (this.info.isEquip) this.Equip.string = `裝備中`;
