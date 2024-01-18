@@ -1,5 +1,6 @@
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import { ItemInfo } from "../DataBase/ItemInfo";
+import { PublicData } from "../DataBase/PublicData";
 import { DropItemName } from "../Enum/DropItemName";
 import { EquipmentType } from "../Enum/EquipmentType";
 import { UseItemName } from "../Enum/UseItemName";
@@ -237,5 +238,13 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
             //#endregion
         }
         return item;
+    }
+    findEquipByID(ID: number) {
+        let array = [];
+        for (let i of PublicData.getInstance.userItem.userEquip)
+            array.push(i.ID);
+        if (array.indexOf(ID) != -1)
+            return PublicData.getInstance.userItem.userEquip[array.indexOf(ID)];
+        else return null;
     }
 }

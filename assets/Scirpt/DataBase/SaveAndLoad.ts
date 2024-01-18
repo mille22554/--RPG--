@@ -94,6 +94,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         if (key == DataKey.UserDropItemKey)
             Data = PublicData.getInstance.item.dropItem;
         if (key == DataKey.UserEquipKey) {
+            PublicData.getInstance.item.equipment.短刀.ID = 0;
             Data = [PublicData.getInstance.item.equipment.短刀];
         }
         if (key == DataKey.UserUseItemKey) {

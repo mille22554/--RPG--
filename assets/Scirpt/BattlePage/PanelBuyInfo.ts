@@ -4,6 +4,7 @@ import { ItemInfo } from "../DataBase/ItemInfo";
 import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { PublicData } from "../DataBase/PublicData";
 import { EventEnum } from "../Enum/EventEnum";
+import { SetItemInfo } from "../計算/SetItemInfo";
 
 const { ccclass, property } = _decorator;
 @ccclass("PanelBuyInfo")
@@ -36,11 +37,11 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
     show(...any: any[]): void {
         super.show();
         SaveAndLoad.getInstance.loadItemData();
-        this.eventEmit(EventEnum.setScrollViewHeightPM)
+        this.eventEmit(EventEnum.setScrollViewHeightPM);
     }
     hide(): void {
-        super.hide()
-        this.eventEmit(EventEnum.setScrollViewHeightPM)
+        super.hide();
+        this.eventEmit(EventEnum.setScrollViewHeightPM);
     }
     switchEquip(info: ItemInfo) {
         this.show();
@@ -91,10 +92,15 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
                         PublicData.getInstance.userItem.userEquip.push(
                             this.nowItemInfo
                         );
-                        this.nowItemInfo.ID =
-                            PublicData.getInstance.userItem.userEquip.indexOf(
-                                this.nowItemInfo
-                            );
+
+                        let i = 0;
+                        for (
+                            i = 0;
+                            SetItemInfo.getInstance.findEquipByID(i) != null;
+                            i++
+                        );
+                        this.nowItemInfo.ID = i;
+
                         SaveAndLoad.getInstance.saveItemData(
                             PublicData.getInstance.userItem.userEquip,
                             DataKey.UserEquipKey

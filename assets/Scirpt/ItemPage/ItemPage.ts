@@ -63,9 +63,9 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                     item.Type.string = i.Type;
                     item.Durability.string = `耐久 ${i.Durability.toString()}`;
 
-                    PublicData.getInstance.userItem.userEquip[
-                        PublicData.getInstance.userItem.userEquip.indexOf(i)
-                    ].ID = PublicData.getInstance.userItem.userEquip.indexOf(i);
+                    // PublicData.getInstance.userItem.userEquip[
+                    //     PublicData.getInstance.userItem.userEquip.indexOf(i)
+                    // ].ID = PublicData.getInstance.userItem.userEquip.indexOf(i);
 
                     item.info = i;
                 }

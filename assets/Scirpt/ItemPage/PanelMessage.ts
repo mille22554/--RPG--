@@ -4,6 +4,7 @@ import { PublicData } from "../DataBase/PublicData";
 import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { EventEnum } from "../Enum/EventEnum";
 import { SetUserEquip } from "../計算/SetUserEquip";
+import { SetUserInfo } from "../計算/SetUserInfo";
 
 const { ccclass, property } = _decorator;
 @ccclass("PanelMessage")
@@ -131,6 +132,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             PublicData.getInstance.userItem.userEquip,
             DataKey.UserEquipKey
         );
+        SetUserInfo.getInstance.setUserInfo()
         this.eventEmit(EventEnum.refreshItemPage);
     }
     use() {
