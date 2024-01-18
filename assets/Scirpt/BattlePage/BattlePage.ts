@@ -159,10 +159,11 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
     }
     GoForward() {
         if (this.panelMessage.active) return;
-        
+
         SaveAndLoad.getInstance.loadUserData()
         SaveAndLoad.getInstance.loadMobData()
         SaveAndLoad.getInstance.loadPlayerEquipData()
+        SaveAndLoad.getInstance.loadItemData()
 
         if (PublicData.getInstance.userData.isBattle) {
             if (Battle.getInstance.PlayerSpeed >= 1500)
