@@ -172,5 +172,9 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
                 }
                 break;
         }
+        SaveAndLoad.getInstance.saveItemData(
+            PublicData.getInstance.item.dropItem,
+            DataKey.UserDropItemKey
+        );
     }
 }

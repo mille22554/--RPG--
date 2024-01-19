@@ -493,6 +493,9 @@ export class Battle extends BaseSingleton<Battle>() {
                 PublicData.getInstance.userItem.userEquip,
                 DataKey.UserEquipKey
             );
+            SaveAndLoad.getInstance.savePlayerEquipData(
+                PublicData.getInstance.playerEquip
+            );
             PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
             return true;
         }
