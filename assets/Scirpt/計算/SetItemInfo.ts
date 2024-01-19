@@ -260,10 +260,16 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                 1
             );
     }
-    findIndexByID(ID:number){
+    findIndexByID(ID: number) {
         let array = [];
         for (let i of PublicData.getInstance.userItem.userEquip)
             array.push(i.ID);
-        return array.indexOf(ID)
+        return array.indexOf(ID);
+    }
+    findIndexByType(Type: string, itemType: string) {
+        let array = [];
+        for (let i in PublicData.getInstance.userItem[Type])
+            array.push(PublicData.getInstance.userItem[Type][i].Type);
+        return array.indexOf(itemType);
     }
 }

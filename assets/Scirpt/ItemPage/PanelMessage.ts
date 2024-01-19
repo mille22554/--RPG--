@@ -1,4 +1,4 @@
-import { Label, Node, _decorator, warn } from "cc";
+import { EditBox, Label, Node, _decorator, warn } from "cc";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
 import { PublicData } from "../DataBase/PublicData";
 import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
@@ -44,6 +44,10 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     btnEquip: Node;
     @property(Node)
     content: Node;
+    @property(Node)
+    saleNum: Node;
+    @property(EditBox)
+    editbox: EditBox;
     nowItemClass;
     nowItemInfo: ItemInfo;
     nowType: string;
@@ -54,6 +58,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     show(...any: any[]): void {
         super.show();
         SaveAndLoad.getInstance.loadItemData();
+        this.editbox.textLabel.string = `0`;
     }
     switchPanelMessageEquip(info: ItemInfo) {
         this.show();
@@ -76,13 +81,17 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.Num.string = ``;
         this.Equip.string = this.nowItemClass.Equip.string;
         this.btnEquip.active = true;
+        this.saleNum.active = false;
     }
     switchPanelMessageSozai(info: ItemInfo) {
         this.show();
         this.nowItemInfo = info;
         this.nowItemClass =
             this.content.children[
-                SetItemInfo.getInstance.findIndexByID(info.ID)
+                SetItemInfo.getInstance.findIndexByType(
+                    DataKey.UserDropItemKey,
+                    info.Type
+                )
             ].getComponent(Sozai);
         this.Name.string = info.Name;
         this.Type.string = ``;
@@ -97,13 +106,17 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.Gold.string = `$ ${info.Gold.toString()}`;
         this.Num.string = `X${info.Num.toString()}`;
         this.btnEquip.active = false;
+        this.saleNum.active = true;
     }
     switchPanelMessageUse(info: ItemInfo) {
         this.show();
         this.nowItemInfo = info;
         this.nowItemClass =
             this.content.children[
-                SetItemInfo.getInstance.findIndexByID(info.ID)
+                SetItemInfo.getInstance.findIndexByType(
+                    DataKey.UserUseItemKey,
+                    info.Type
+                )
             ].getComponent(UseItem);
         this.Name.string = info.Name;
         this.Type.string = ``;
@@ -119,6 +132,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.Num.string = `X${info.Num.toString()}`;
         this.Equip.string = `使用`;
         this.btnEquip.active = true;
+        this.saleNum.active = true;
     }
     EquipORUse() {
         SaveAndLoad.getInstance.loadUserData();
@@ -257,11 +271,11 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         PublicData.getInstance.userData.Gold +=
             PublicData.getInstance.userItem.userDropItem[
                 this.nowItemClass[`info`].Type
-            ].Gold;
+            ].Gold * Number(this.editbox.textLabel.string);
 
         PublicData.getInstance.userItem.userDropItem[
             this.nowItemClass[`info`].Type
-        ].Num -= 1;
+        ].Num -= Number(this.editbox.textLabel.string);
 
         this.Num.string =
             this.nowItemClass.Num.string = `X${PublicData.getInstance.userItem.userDropItem[
@@ -276,6 +290,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             PublicData.getInstance.userItem.userDropItem,
             DataKey.UserDropItemKey
         );
+        this.onTexting();
         if (
             PublicData.getInstance.userItem.userDropItem[
                 this.nowItemClass[`info`].Type
@@ -316,5 +331,9 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             this.hide();
             this.eventEmit(EventEnum.refreshItemPage);
         }
+    }
+    onTexting() {
+        if (Number(this.editbox.textLabel.string) > this.nowItemInfo.Num)
+            this.editbox.textLabel.string = this.nowItemInfo.Num.toString();
     }
 }
