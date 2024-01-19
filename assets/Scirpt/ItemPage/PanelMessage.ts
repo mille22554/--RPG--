@@ -54,6 +54,10 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     protected onLoad(): void {
         super.onLoad();
         this.hide();
+        this.setEvent(EventEnum.switchPanelMessageEquip,this.switchPanelMessageEquip)
+        this.setEvent(EventEnum.switchPanelMessageSozai,this.switchPanelMessageSozai)
+        this.setEvent(EventEnum.switchPanelMessageUse,this.switchPanelMessageUse)
+        this.setEvent(EventEnum.equip,this.equip)
     }
     show(...any: any[]): void {
         super.show();

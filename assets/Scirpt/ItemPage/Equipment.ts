@@ -1,10 +1,8 @@
 import { Label, _decorator } from "cc";
 import BaseComponent from "../../Model/BaseComponent";
 import { ItemInfo } from "../DataBase/ItemInfo";
-import { PublicData } from "../DataBase/PublicData";
 import { SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { EventEnum } from "../Enum/EventEnum";
-import PanelMessage from "./PanelMessage";
 import { SetItemInfo } from "../計算/SetItemInfo";
 
 const { ccclass, property } = _decorator;
@@ -31,7 +29,7 @@ export default class Equipment extends BaseComponent {
         );
     }
     openInfo() {
-        PanelMessage.instance.switchPanelMessageEquip(this.info);
+        this.eventEmit(EventEnum.switchPanelMessageEquip, this.info);
         this.eventEmit(EventEnum.setScrollViewHeightIP);
     }
     setEuqipText(type) {
@@ -43,6 +41,6 @@ export default class Equipment extends BaseComponent {
         SaveAndLoad.getInstance.loadItemData();
         SetItemInfo.getInstance.findEquipByID(this.info.ID).isEquip =
             this.info.isEquip = !this.info.isEquip;
-        PanelMessage.instance.equip(this);
+            this.eventEmit(EventEnum.equip, this);
     }
 }

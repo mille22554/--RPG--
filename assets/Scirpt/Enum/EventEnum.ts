@@ -8,4 +8,8 @@ export enum EventEnum {
     setScrollViewHeightIP = `setScrollViewHeightIP`,
     setScrollViewHeightPM = `setScrollViewHeightPM`,
     init = `init`,
+    switchPanelMessageEquip = `switchPanelMessageEquip`,
+    switchPanelMessageSozai = `switchPanelMessageSozai`,
+    switchPanelMessageUse = `switchPanelMessageUse`,
+    equip = `equip`,
 }
