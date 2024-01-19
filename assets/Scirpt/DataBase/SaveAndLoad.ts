@@ -54,10 +54,6 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
     loadMobData() {
         const jsonData = sys.localStorage.getItem(DataKey.mobDataKey);
         let Data = JSON.parse(jsonData);
-        if (Data == null) {
-            this.loadMobData();
-            return;
-        }
         PublicData.getInstance.mobData = Data;
     }
     //#endregion

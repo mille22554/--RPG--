@@ -11,6 +11,7 @@ import { EquipmentType } from "../Enum/EquipmentType";
 import { EventEnum } from "../Enum/EventEnum";
 import { SetMobInfo } from "./SetMobInfo";
 import { SetUserInfo } from "./SetUserInfo";
+import { UserData } from "../DataBase/UserData";
 
 export class Battle extends BaseSingleton<Battle>() {
     speedTimer: number;
@@ -25,7 +26,7 @@ export class Battle extends BaseSingleton<Battle>() {
                     for (let i of PublicData.getInstance.mobData) {
                         if (
                             this.mobSpeed[
-                                PublicData.getInstance.mobData.indexOf(i)
+                            PublicData.getInstance.mobData.indexOf(i)
                             ] >= 1500
                         )
                             this.mobAction(
@@ -58,6 +59,7 @@ export class Battle extends BaseSingleton<Battle>() {
         }, 1);
     }
     Battel() {
+        //#region 宣告
         let target = randomRangeInt(0, PublicData.getInstance.mobData.length),
             hp = Number(
                 PublicData.getInstance.mobData[target].HP.split(`/`)[0]
@@ -69,13 +71,14 @@ export class Battle extends BaseSingleton<Battle>() {
             dmg = Math.floor(
                 (PublicData.getInstance.userData.Lux +
                     PublicData.getInstance.userExtra.Lux) *
-                    2 *
-                    randomRange(0.5, 1)
+                2 *
+                randomRange(0.5, 1)
             ),
             Stamina = Number(
                 PublicData.getInstance.userData.Stamina.split(`/`)[0]
             ),
             isLeft = false;
+        //#endregion
 
         if (this.PlayerSpeed >= 1500) this.PlayerSpeed -= 1500;
         else {
@@ -84,10 +87,9 @@ export class Battle extends BaseSingleton<Battle>() {
         }
         this.isPlayerTurn = false;
         Stamina -= 1;
-        PublicData.getInstance.userData.Stamina = `${Stamina}/${
-            PublicData.getInstance.userData.Stamina.split(`/`)[1]
-        }`;
-        //幸運判定
+        PublicData.getInstance.userData.Stamina = `${Stamina}/${PublicData.getInstance.userData.Stamina.split(`/`)[1]
+            }`;
+        //#region 幸運判定
         this.luckyEvent(
             hp,
             PublicData.getInstance.userData,
@@ -103,36 +105,18 @@ export class Battle extends BaseSingleton<Battle>() {
             )
         )
             return;
-        //迴避判定
-        if (PublicData.getInstance.mobData[target].Dodge > randomRange(0, 1)) {
-            PanelLog.instance.addLog(
-                `${PublicData.getInstance.userData.Name}的攻擊，但${PublicData.getInstance.mobData[target].Name}躲開了`,
-                Color.GRAY
-            );
-            return;
-        }
-        //武器種類判定
+        //#endregion
+        //#region 迴避判定
+        this.RunDodge(PublicData.getInstance.userData, PublicData.getInstance.mobData[target])
+        //#endregion
+        //#region 武器種類判定
         let base: number;
-        switch (PublicData.getInstance.playerEquip.rightHand.Type) {
-            case EquipmentType.E3:
-            case EquipmentType.E4:
-                base = PublicData.getInstance.userData.AP;
-                break;
-            case EquipmentType.E9:
-            case EquipmentType.E10:
-                base =
-                    (PublicData.getInstance.userData.AP +
-                        PublicData.getInstance.userData.AD) /
-                    2;
-                break;
-            default:
-                base = PublicData.getInstance.userData.AD;
-                break;
-        }
-        //傷害判定
+        base = this.RunWeapon(base, PublicData.getInstance.playerEquip.rightHand.Type)
+        //#endregion
+        //#region 傷害判定
         dmg = Math.floor(
             base * randomRange(0.5, 1) * critical -
-                PublicData.getInstance.mobData[target].DEF
+            PublicData.getInstance.mobData[target].DEF
         );
         if (dmg < 0) dmg = 0;
         hp -= dmg;
@@ -145,7 +129,8 @@ export class Battle extends BaseSingleton<Battle>() {
                 `${PublicData.getInstance.userData.Name}擊中了要害，${PublicData.getInstance.mobData[target].Name}受到了${dmg}點傷害`,
                 Color.YELLOW
             );
-        //武器損壞判定
+        //#endregion
+        //#region 武器損壞判定
         if (isLeft) {
             if (PublicData.getInstance.playerEquip.leftHand.ID != -1) {
                 PublicData.getInstance.userItem.userEquip[
@@ -183,7 +168,8 @@ export class Battle extends BaseSingleton<Battle>() {
                 }
             }
         }
-        //死亡判定
+        //#endregion
+        //#region 死亡判定
         if (
             this.deathAction(
                 hp,
@@ -193,7 +179,8 @@ export class Battle extends BaseSingleton<Battle>() {
             )
         )
             return;
-        //體力判定
+        //#endregion
+        //#region 體力判定
         if (Stamina <= 0) {
             PanelLog.instance.addLog(
                 `${PublicData.getInstance.userData.Name}的體力耗盡了`,
@@ -203,7 +190,8 @@ export class Battle extends BaseSingleton<Battle>() {
                 return;
         }
         PublicData.getInstance.mobData[target].HP = `${hp}`;
-        //戰鬥結束存檔
+        //#endregion
+        //#region 戰鬥結束存檔
         SaveAndLoad.getInstance.saveUserData(
             PublicData.getInstance.userData,
             PublicData.getInstance.userExtra
@@ -214,6 +202,7 @@ export class Battle extends BaseSingleton<Battle>() {
             DataKey.UserEquipKey
         );
         PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
+        //#endregion
     }
     mobAction(target: number) {
         SaveAndLoad.getInstance.loadUserData();
@@ -222,13 +211,13 @@ export class Battle extends BaseSingleton<Battle>() {
         let hp = Number(PublicData.getInstance.userData.HP.split(`/`)[0]),
             critical =
                 PublicData.getInstance.mobData[target].Critical >
-                randomRange(0, 1)
+                    randomRange(0, 1)
                     ? 2
                     : 1,
             dmg = Math.floor(
                 PublicData.getInstance.mobData[target].Lux *
-                    2 *
-                    randomRange(0.5, 1)
+                2 *
+                randomRange(0.5, 1)
             );
         //幸運判定
         this.luckyEvent(
@@ -250,9 +239,9 @@ export class Battle extends BaseSingleton<Battle>() {
         //傷害判定
         dmg = Math.floor(
             PublicData.getInstance.mobData[target].AD *
-                randomRange(0.5, 1) *
-                critical -
-                PublicData.getInstance.userData.DEF
+            randomRange(0.5, 1) *
+            critical -
+            PublicData.getInstance.userData.DEF
         );
         if (dmg < 0) dmg = 0;
         hp -= dmg;
@@ -311,7 +300,7 @@ export class Battle extends BaseSingleton<Battle>() {
                                 warn(i.ID);
                                 warn(
                                     PublicData.getInstance.userItem.userEquip[
-                                        i.ID
+                                    i.ID
                                     ]
                                 );
                             }
@@ -338,9 +327,8 @@ export class Battle extends BaseSingleton<Battle>() {
             }
         if (this.deathAction(hp, PublicData.getInstance.userData.Name, true))
             return;
-        PublicData.getInstance.userData.HP = `${hp}/${
-            PublicData.getInstance.userData.HP.split(`/`)[1]
-        }`;
+        PublicData.getInstance.userData.HP = `${hp}/${PublicData.getInstance.userData.HP.split(`/`)[1]
+            }`;
         //戰鬥結束存檔
         SaveAndLoad.getInstance.saveUserData(
             PublicData.getInstance.userData,
@@ -352,7 +340,7 @@ export class Battle extends BaseSingleton<Battle>() {
         );
         PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
     }
-    luckyEvent(hp, hiter, behiter, dmg) {
+    luckyEvent(hp: number, hiter: UserData, behiter: UserData, dmg: number) {
         //幸運判定
         if (hiter.Lucky > randomRange(0, 1)) {
             hp -= dmg;
@@ -362,6 +350,34 @@ export class Battle extends BaseSingleton<Battle>() {
             );
         }
         return hp;
+    }
+    RunDodge(hiter: UserData, behiter: UserData) {
+        if (behiter.Dodge > randomRange(0, 1)) {
+            PanelLog.instance.addLog(
+                `${hiter.Name}的攻擊，但${behiter.Name}躲開了`,
+                Color.GRAY
+            );
+            return;
+        }
+    }
+    RunWeapon(base, Type) {
+        switch (Type) {
+            case EquipmentType.E3:
+            case EquipmentType.E4:
+                base = PublicData.getInstance.userData.AP;
+                break;
+            case EquipmentType.E9:
+            case EquipmentType.E10:
+                base =
+                    (PublicData.getInstance.userData.AP +
+                        PublicData.getInstance.userData.AD) /
+                    2;
+                break;
+            default:
+                base = PublicData.getInstance.userData.AD;
+                break;
+        }
+        return base
     }
     deathAction(
         hp: number,
@@ -378,18 +394,16 @@ export class Battle extends BaseSingleton<Battle>() {
                 );
                 Stamina = 0;
 
-                PublicData.getInstance.userData.HP = `${hp}/${
-                    PublicData.getInstance.userData.HP.split(`/`)[1]
-                }`;
-                PublicData.getInstance.userData.Stamina = `${Stamina}/${
-                    PublicData.getInstance.userData.Stamina.split(`/`)[1]
-                }`;
+                PublicData.getInstance.userData.HP = `${hp}/${PublicData.getInstance.userData.HP.split(`/`)[1]
+                    }`;
+                PublicData.getInstance.userData.Stamina = `${Stamina}/${PublicData.getInstance.userData.Stamina.split(`/`)[1]
+                    }`;
             } else {
                 PanelLog.instance.addLog(`${name}被擊退了`, Color.GREEN);
                 let exp =
-                        Number(
-                            PublicData.getInstance.userData.Exp.split(`/`)[0]
-                        ) + PublicData.getInstance.mobData[mobTarget].Level,
+                    Number(
+                        PublicData.getInstance.userData.Exp.split(`/`)[0]
+                    ) + PublicData.getInstance.mobData[mobTarget].Level,
                     MaxExp = Number(
                         PublicData.getInstance.userData.Exp.split(`/`)[1]
                     );
