@@ -97,7 +97,6 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
         return data;
     }
     setMobDrop(mobName: string) {
-        SaveAndLoad.getInstance.loadItemData();
         switch (mobName) {
             case MobName.M0:
                 let i = new DropItem().史萊姆球;
@@ -109,13 +108,8 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
                         `${mobName}掉落了${dropNum}個${i.Name}`,
                         Color.GREEN
                     );
-                SaveAndLoad.getInstance.loadItemData();
                 PublicData.getInstance.item.dropItem[i.Name].Num += dropNum;
                 PublicData.getInstance.item.dropItem[i.Name].Name = i.Name;
-                SaveAndLoad.getInstance.saveItemData(
-                    PublicData.getInstance.item.dropItem,
-                    DataKey.UserDropItemKey
-                );
                 break;
             case MobName.M1:
                 for (let id of [DropItemName.DI0, DropItemName.DI1]) {
@@ -178,9 +172,5 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
                 }
                 break;
         }
-        SaveAndLoad.getInstance.saveItemData(
-            PublicData.getInstance.item.dropItem,
-            DataKey.UserDropItemKey
-        );
     }
 }

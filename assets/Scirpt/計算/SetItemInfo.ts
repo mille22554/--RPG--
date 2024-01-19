@@ -1,3 +1,4 @@
+import { warn } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import { ItemInfo } from "../DataBase/ItemInfo";
 import { PublicData } from "../DataBase/PublicData";
@@ -243,8 +244,26 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
         let array = [];
         for (let i of PublicData.getInstance.userItem.userEquip)
             array.push(i.ID);
+        warn(ID, array, array.indexOf(ID));
         if (array.indexOf(ID) != -1)
             return PublicData.getInstance.userItem.userEquip[array.indexOf(ID)];
         else return null;
+    }
+    delectEquipByID(ID: number) {
+        let array = [];
+        for (let i of PublicData.getInstance.userItem.userEquip)
+            array.push(i.ID);
+        warn(array, array.indexOf(ID));
+        if (array.indexOf(ID) != -1)
+            PublicData.getInstance.userItem.userEquip.splice(
+                array.indexOf(ID),
+                1
+            );
+    }
+    findIndexByID(ID:number){
+        let array = [];
+        for (let i of PublicData.getInstance.userItem.userEquip)
+            array.push(i.ID);
+        return array.indexOf(ID)
     }
 }

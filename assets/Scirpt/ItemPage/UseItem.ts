@@ -13,7 +13,7 @@ export default class UseItem extends BaseComponent {
     Num: Label;
     info: ItemInfo;
     openInfo() {
-        PanelMessage.instance.switchPanelMessageUse(this);
+        PanelMessage.instance.switchPanelMessageUse(this.info);
         this.eventEmit(EventEnum.setScrollViewHeightIP)
     }
 }

@@ -13,7 +13,7 @@ export default class Sozai extends BaseComponent {
     Num: Label;
     info: ItemInfo;
     openInfo() {
-        PanelMessage.instance.switchPanelMessageSozai(this);
+        PanelMessage.instance.switchPanelMessageSozai(this.info);
         this.eventEmit(EventEnum.setScrollViewHeightIP)
     }
 }

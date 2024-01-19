@@ -1,10 +1,15 @@
-import { Label, Node, _decorator } from "cc";
+import { Label, Node, _decorator, warn } from "cc";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
 import { PublicData } from "../DataBase/PublicData";
 import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
 import { EventEnum } from "../Enum/EventEnum";
 import { SetUserEquip } from "../計算/SetUserEquip";
 import { SetUserInfo } from "../計算/SetUserInfo";
+import { SetItemInfo } from "../計算/SetItemInfo";
+import Equipment from "./Equipment";
+import Sozai from "./Sozai";
+import UseItem from "./UseItem";
+import { ItemInfo } from "../DataBase/ItemInfo";
 
 const { ccclass, property } = _decorator;
 @ccclass("PanelMessage")
@@ -37,7 +42,10 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     Num: Label;
     @property(Node)
     btnEquip: Node;
+    @property(Node)
+    content: Node;
     nowItemClass;
+    nowItemInfo: ItemInfo;
     nowType: string;
     protected onLoad(): void {
         super.onLoad();
@@ -47,28 +55,36 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         super.show();
         SaveAndLoad.getInstance.loadItemData();
     }
-    switchPanelMessageEquip(info) {
+    switchPanelMessageEquip(info: ItemInfo) {
         this.show();
-        this.nowItemClass = info;
-        this.Name.string = info.info.Name;
-        this.Type.string = info.info.Type;
-        this.Durability.string = `耐久 ${info.info.Durability.toString()}`;
-        this.AD.string = `物攻 ${info.info.AD.toString()}`;
-        this.DEF.string = `物防 ${info.info.DEF.toString()}`;
-        this.AP.string = `魔攻 ${info.info.AP.toString()}`;
-        this.MDF.string = `魔防 ${info.info.MDF.toString()}`;
-        this.Speed.string = `速度 ${info.info.Speed.toString()}`;
-        this.Critical.string = `爆擊 ${info.info.Critical.toString()}`;
-        this.Dodge.string = `迴避 ${info.info.Dodge.toString()}`;
-        this.Gold.string = `$ ${(info.info.Gold / 2).toString()}`;
+        this.nowItemInfo = info;
+        this.nowItemClass =
+            this.content.children[
+                SetItemInfo.getInstance.findIndexByID(info.ID)
+            ].getComponent(Equipment);
+        this.Name.string = info.Name;
+        this.Type.string = info.Type;
+        this.Durability.string = `耐久 ${info.Durability.toString()}`;
+        this.AD.string = `物攻 ${info.AD.toString()}`;
+        this.DEF.string = `物防 ${info.DEF.toString()}`;
+        this.AP.string = `魔攻 ${info.AP.toString()}`;
+        this.MDF.string = `魔防 ${info.MDF.toString()}`;
+        this.Speed.string = `速度 ${info.Speed.toString()}`;
+        this.Critical.string = `爆擊 ${info.Critical.toString()}`;
+        this.Dodge.string = `迴避 ${info.Dodge.toString()}`;
+        this.Gold.string = `$ ${(info.Gold / 2).toString()}`;
         this.Num.string = ``;
         this.Equip.string = this.nowItemClass.Equip.string;
         this.btnEquip.active = true;
     }
-    switchPanelMessageSozai(info) {
+    switchPanelMessageSozai(info: ItemInfo) {
         this.show();
-        this.nowItemClass = info;
-        this.Name.string = info.info.Name;
+        this.nowItemInfo = info;
+        this.nowItemClass =
+            this.content.children[
+                SetItemInfo.getInstance.findIndexByID(info.ID)
+            ].getComponent(Sozai);
+        this.Name.string = info.Name;
         this.Type.string = ``;
         this.Durability.string = ``;
         this.AD.string = ``;
@@ -78,14 +94,18 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.Speed.string = ``;
         this.Critical.string = ``;
         this.Dodge.string = ``;
-        this.Gold.string = `$ ${info.info.Gold.toString()}`;
-        this.Num.string = `X${info.info.Num.toString()}`;
+        this.Gold.string = `$ ${info.Gold.toString()}`;
+        this.Num.string = `X${info.Num.toString()}`;
         this.btnEquip.active = false;
     }
-    switchPanelMessageUse(info) {
+    switchPanelMessageUse(info: ItemInfo) {
         this.show();
-        this.nowItemClass = info;
-        this.Name.string = info.info.Name;
+        this.nowItemInfo = info;
+        this.nowItemClass =
+            this.content.children[
+                SetItemInfo.getInstance.findIndexByID(info.ID)
+            ].getComponent(UseItem);
+        this.Name.string = info.Name;
         this.Type.string = ``;
         this.Durability.string = ``;
         this.AD.string = ``;
@@ -95,8 +115,8 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.Speed.string = ``;
         this.Critical.string = ``;
         this.Dodge.string = ``;
-        this.Gold.string = `$ ${(info.info.Gold / 2).toString()}`;
-        this.Num.string = `X${info.info.Num.toString()}`;
+        this.Gold.string = `$ ${(info.Gold / 2).toString()}`;
+        this.Num.string = `X${info.Num.toString()}`;
         this.Equip.string = `使用`;
         this.btnEquip.active = true;
     }
@@ -105,10 +125,16 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         SaveAndLoad.getInstance.loadPlayerEquipData();
         SaveAndLoad.getInstance.loadItemData();
         switch (this.nowType) {
-            case `equipment`:                
-                PublicData.getInstance.userItem.userEquip[
+            case `equipment`:
+                this.nowItemClass =
+                    this.content.children[
+                        SetItemInfo.getInstance.findIndexByID(
+                            this.nowItemInfo.ID
+                        )
+                    ].getComponent(Equipment);
+                SetItemInfo.getInstance.findEquipByID(
                     this.nowItemClass.info.ID
-                ].isEquip = this.nowItemClass.info.isEquip =
+                ).isEquip = this.nowItemClass.info.isEquip =
                     !this.nowItemClass.info.isEquip;
                 this.equip(this.nowItemClass);
                 break;
@@ -132,7 +158,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             PublicData.getInstance.userItem.userEquip,
             DataKey.UserEquipKey
         );
-        SetUserInfo.getInstance.setUserInfo()
+        SetUserInfo.getInstance.setUserInfo();
         this.eventEmit(EventEnum.refreshItemPage);
     }
     use() {
@@ -210,9 +236,8 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     }
     saleEquip() {
         PublicData.getInstance.userData.Gold +=
-            PublicData.getInstance.userItem.userEquip[
-                this.nowItemClass[`info`].Num
-            ].Gold / 2;
+            SetItemInfo.getInstance.findEquipByID(this.nowItemClass[`info`].Num)
+                .Gold / 2;
         PublicData.getInstance.userItem.userEquip.splice(
             this.nowItemClass[`info`].Num,
             1

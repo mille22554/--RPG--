@@ -8,6 +8,7 @@ import { UserEuqipInfo } from "../DataBase/UserData";
 import { EquipPartEnum } from "../Enum/EquipPartEnum";
 import { EquipmentType } from "../Enum/EquipmentType";
 import Equipment from "../ItemPage/Equipment";
+import { SetItemInfo } from "./SetItemInfo";
 
 export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
     item: Equipment;
@@ -230,9 +231,9 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
             }
         }
         if (PublicData.getInstance.playerEquip.ring[9].ID != -1)
-            PublicData.getInstance.userItem.userEquip[
+            SetItemInfo.getInstance.findEquipByID(
                 PublicData.getInstance.playerEquip.ring[9].ID
-            ].isEquip = false;
+            ).isEquip = false;
         PublicData.getInstance.playerEquip.ring[9] = info;
     }
     mask(info: ItemInfo) {
@@ -275,20 +276,20 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
     setIsEquip(mainType, subType?, thirdType?) {
         if (mainType == EquipPartEnum.ring) {
             if (PublicData.getInstance.playerEquip.ring[9].ID != -1)
-                PublicData.getInstance.userItem.userEquip[
+                SetItemInfo.getInstance.findEquipByID(
                     PublicData.getInstance.playerEquip.ring[9].ID
-                ].isEquip = false;
+                ).isEquip = false;
         }
         if (PublicData.getInstance.playerEquip[mainType].ID != -1)
-            PublicData.getInstance.userItem.userEquip[
+            SetItemInfo.getInstance.findEquipByID(
                 PublicData.getInstance.playerEquip[mainType].ID
-            ].isEquip = false;
+            ).isEquip = false;
 
         if (subType)
             if (PublicData.getInstance.playerEquip[subType].ID != -1)
-                PublicData.getInstance.userItem.userEquip[
+                SetItemInfo.getInstance.findEquipByID(
                     PublicData.getInstance.playerEquip[subType].ID
-                ].isEquip = false;
+                ).isEquip = false;
 
         if (thirdType == EquipPartEnum.twoHand)
             subType = EquipPartEnum.rightHand;
@@ -300,8 +301,8 @@ export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
                 PublicData.getInstance.playerEquip[subType].ID != -1 &&
                 PublicData.getInstance.playerEquip[subType].Type == type
             )
-                PublicData.getInstance.userItem.userEquip[
+                SetItemInfo.getInstance.findEquipByID(
                     PublicData.getInstance.playerEquip[subType].ID
-                ].isEquip = false;
+                ).isEquip = false;
     }
 }

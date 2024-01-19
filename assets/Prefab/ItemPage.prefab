@@ -4210,7 +4210,6 @@
     "__type__": "7f34d0dkNhGZpdpJ3A9ELGx",
     "_name": "",
     "_objFlags": 0,
-    "__editorExtras__": {},
     "node": {
       "__id__": 73
     },
@@ -4259,6 +4258,9 @@
     },
     "btnEquip": {
       "__id__": 152
+    },
+    "content": {
+      "__id__": 56
     },
     "_id": ""
   },
