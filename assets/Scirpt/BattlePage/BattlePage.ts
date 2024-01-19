@@ -139,6 +139,10 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
                 Battle.getInstance.PlayerSpeed -= 1500;
                 this.escape();
             }
+            if (Battle.getInstance.PlayerSpeed2 >= 1500) {
+                Battle.getInstance.PlayerSpeed2 -= 1500;
+                this.escape();
+            }
             return;
         }
         this.panelMessage.active = true;
@@ -160,13 +164,16 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
     GoForward() {
         if (this.panelMessage.active) return;
 
-        SaveAndLoad.getInstance.loadUserData()
-        SaveAndLoad.getInstance.loadMobData()
-        SaveAndLoad.getInstance.loadPlayerEquipData()
-        SaveAndLoad.getInstance.loadItemData()
+        SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadMobData();
+        SaveAndLoad.getInstance.loadPlayerEquipData();
+        SaveAndLoad.getInstance.loadItemData();
 
         if (PublicData.getInstance.userData.isBattle) {
-            if (Battle.getInstance.PlayerSpeed >= 1500)
+            if (
+                Battle.getInstance.PlayerSpeed >= 1500 ||
+                Battle.getInstance.PlayerSpeed2 >= 1500
+            )
                 Battle.getInstance.Battel();
             return;
         }

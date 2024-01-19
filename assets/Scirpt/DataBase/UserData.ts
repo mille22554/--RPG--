@@ -37,7 +37,7 @@ export class ExtraPoint {
     Agi: number = 0;
     Lux: number = 0;
 }
-export class UserEuqipInfo{
+export class UserEuqipInfo {
     AD = 0;
     AP = 0;
     DEF = 0;

@@ -7,4 +7,5 @@ export enum EventEnum {
     setEuqipText = `setEuqipText`,
     setScrollViewHeightIP = `setScrollViewHeightIP`,
     setScrollViewHeightPM = `setScrollViewHeightPM`,
+    init = `init`,
 }
