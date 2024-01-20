@@ -12,7 +12,7 @@ export default class Zone extends BaseComponent {
     labelName: Label;
     @property(Label)
     labelLV: Label;
-    selectZone() {
+    async selectZone() {
         let hp = Number(PublicData.getInstance.userData.HP.split(`/`)[0]),
             Stamina = Number(
                 PublicData.getInstance.userData.Stamina.split(`/`)[0]
@@ -20,7 +20,7 @@ export default class Zone extends BaseComponent {
         if (hp == 0 || Stamina == 0) return;
         EasyCode.getInstance.putInPool(`logItem`);
 
-        SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadUserData();
         PublicData.getInstance.userData[`AreaLevel`] = 1;
         PublicData.getInstance.userData[`ZoneName`] = this.labelName.string;
         PublicData.getInstance.userData[`isField`] = true;

@@ -28,8 +28,8 @@ export default class CharactorPage extends BaseSingletonComponent<CharactorPage>
         super.show();
         this.UserDataLoad();
     }
-    UserDataLoad() {
-        SaveAndLoad.getInstance.loadUserData();
+    async UserDataLoad() {
+        await SaveAndLoad.getInstance.loadUserData();
 
         for (let i of [
             `Name`,
@@ -61,12 +61,12 @@ export default class CharactorPage extends BaseSingletonComponent<CharactorPage>
         for (let i of [`Dodge`, `Critical`]) {
             this.conUserData[i].string = Number(
                 PublicData.getInstance.userData[i]
-            ).toFixed(3);
+            );
         }
     }
-    addPoint(e: { target: { name: string } }) {
-        let data = SaveAndLoad.getInstance.loadUserData(),
-            key = e.target.name.replace(`BtnPlus`, ``);
+    async addPoint(e: { target: { name: string } }) {
+        await SaveAndLoad.getInstance.loadUserData();
+        let key = e.target.name.replace(`BtnPlus`, ``);
 
         if (PublicData.getInstance.userData[`isBattle`]) return;
         if (PublicData.getInstance.userData[`Point`] == 0) return;
@@ -79,9 +79,9 @@ export default class CharactorPage extends BaseSingletonComponent<CharactorPage>
         );
         this.UserDataLoad();
     }
-    minusPoint(e: { target: { name: string } }) {
-        let data = SaveAndLoad.getInstance.loadUserData(),
-            key = e.target.name.replace(`BtnMinus`, ``);
+    async minusPoint(e: { target: { name: string } }) {
+        await SaveAndLoad.getInstance.loadUserData();
+        let key = e.target.name.replace(`BtnMinus`, ``);
 
         if (PublicData.getInstance.userData[`isBattle`]) return;
         if (PublicData.getInstance.userExtra[key] == 0) return;

@@ -1,9 +1,10 @@
 import { _decorator, sys, warn } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
+import { DropItem, ItemInfo, UseItem } from "./ItemInfo";
 import PlayerEquip from "./PlayerEquip";
 import { PublicData } from "./PublicData";
 import { ExtraPoint, UserData } from "./UserData";
-import { ItemInfo } from "./ItemInfo";
+import { BattleData } from "./BattleData";
 const { ccclass, property } = _decorator;
 
 @ccclass("SaveAndLoad")
@@ -11,14 +12,15 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
     startGameLoad(): Promise<void> {
         return new Promise((resolve) => {
             this.loadUserData();
+            this.loadMobData();
             this.loadItemData();
             this.loadPlayerEquipData();
-            this.UpdateData();
+            this.loadBattleData();
             resolve();
         });
     }
     //#region 玩家
-    saveUserData(data, extra) {
+    saveUserData(data: UserData, extra: ExtraPoint) {
         const userData = data;
         const userExtra = extra;
         const jsonData = JSON.stringify(userData);
@@ -26,7 +28,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         sys.localStorage.setItem(DataKey.userDataKey, jsonData);
         sys.localStorage.setItem(DataKey.userExtraKey, jsonExtra);
     }
-    loadUserData() {
+    async loadUserData() {
         const jsonData = sys.localStorage.getItem(DataKey.userDataKey);
         const jsonExtra = sys.localStorage.getItem(DataKey.userExtraKey);
         let userData = JSON.parse(jsonData) as UserData;
@@ -36,7 +38,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             userExtra == null ? new ExtraPoint() : userExtra
         );
         if (userData == null || userExtra == null) {
-            this.loadUserData();
+            await this.loadUserData();
             return;
         }
         userData = JSON.parse(jsonData) as UserData;
@@ -52,19 +54,23 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         sys.localStorage.setItem(DataKey.mobDataKey, jsonData);
     }
     loadMobData() {
-        const jsonData = sys.localStorage.getItem(DataKey.mobDataKey);
-        let Data = JSON.parse(jsonData);
-        PublicData.getInstance.mobData = Data;
+        return new Promise<void>(async (resolve) => {
+            const jsonData = sys.localStorage.getItem(DataKey.mobDataKey);
+            let Data = JSON.parse(jsonData);
+            if (Data == null) {
+                await this.loadMobData();
+                return;
+            }
+            PublicData.getInstance.mobData = Data;
+            resolve();
+        });
     }
     //#endregion
     //#region 物品
-    async saveItemData(data, key: string): Promise<void> {
-        return new Promise((resolve) => {
-            const Data = data;
-            const jsonData = JSON.stringify(Data);
-            sys.localStorage.setItem(key, jsonData);
-            resolve();
-        });
+    async saveItemData(data: DropItem | ItemInfo[] | UseItem, key: string) {
+        const Data = data;
+        const jsonData = JSON.stringify(Data);
+        sys.localStorage.setItem(key, jsonData);
     }
     loadItemData() {
         for (let key of [
@@ -86,7 +92,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             PublicData.getInstance.userItem[key] = Data;
         }
     }
-    firstLogin(key, Data) {
+    firstLogin(key: DataKey, Data: DropItem | ItemInfo[] | UseItem) {
         if (key == DataKey.UserDropItemKey)
             Data = PublicData.getInstance.item.dropItem;
         if (key == DataKey.UserEquipKey) {
@@ -102,7 +108,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
     }
     //#endregion
     //#region 裝備中
-    savePlayerEquipData(data) {
+    savePlayerEquipData(data: PlayerEquip) {
         const Data = data;
         const jsonData = JSON.stringify(Data);
         sys.localStorage.setItem(DataKey.PlayerEquipKey, jsonData);
@@ -123,7 +129,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
     //#region 更新資料
     UpdateData() {
         let data;
-
+        //#region 玩家
         data = new UserData();
         for (let i in PublicData.getInstance.userData)
             data[i] = PublicData.getInstance.userData[i];
@@ -134,11 +140,78 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             data[i] = PublicData.getInstance.userExtra[i];
         }
         PublicData.getInstance.userExtra = data;
-
+        //#endregion
+        //#region 怪
+        for (let mob of PublicData.getInstance.mobData) {
+            data = new UserData();
+            for (let i in mob) {
+                data[i] = mob[i];
+            }
+            mob = data;
+        }
+        //#endregion
+        //#region 物品
+        //#region 裝
+        for (let equip of PublicData.getInstance.userItem.userEquip) {
+            data = new ItemInfo();
+            for (let i in equip) {
+                data[i] = equip[i];
+            }
+            equip = data;
+        }
+        //#endregion
+        //#region 掉落物
+        for (let drop in PublicData.getInstance.userItem.userDropItem) {
+            data = new ItemInfo();
+            for (let i in PublicData.getInstance.userItem.userDropItem[drop]) {
+                data[i] = PublicData.getInstance.userItem.userDropItem[drop][i];
+            }
+            PublicData.getInstance.userItem.userDropItem[drop] = data;
+        }
+        //#endregion
+        //#region 消耗
+        for (let use in PublicData.getInstance.userItem.userUseItem) {
+            data = new ItemInfo();
+            for (let i in PublicData.getInstance.userItem.userUseItem[use]) {
+                data[i] = PublicData.getInstance.userItem.userUseItem[use][i];
+            }
+            PublicData.getInstance.userItem.userUseItem[use] = data;
+        }
+        //#endregion
+        //#endregion
         this.saveUserData(
             PublicData.getInstance.userData,
             PublicData.getInstance.userExtra
         );
+        this.saveMobData(PublicData.getInstance.mobData);
+        this.saveItemData(
+            PublicData.getInstance.userItem.userEquip,
+            DataKey.UserEquipKey
+        );
+        this.saveItemData(
+            PublicData.getInstance.userItem.userDropItem,
+            DataKey.UserDropItemKey
+        );
+        this.saveItemData(
+            PublicData.getInstance.userItem.userUseItem,
+            DataKey.UserUseItemKey
+        );
+    }
+    //#endregion
+    //#region 戰鬥資訊
+    saveBattleData(data: BattleData) {
+        const Data = data;
+        const jsonData = JSON.stringify(Data);
+        sys.localStorage.setItem(DataKey.BattleDataKey, jsonData);
+    }
+    loadBattleData() {
+        const jsonData = sys.localStorage.getItem(DataKey.BattleDataKey);
+        let Data = JSON.parse(jsonData);
+        if (Data == null) {
+            this.loadBattleData();
+            return;
+        }
+        PublicData.getInstance.battleData = Data;
     }
     //#endregion
 }
@@ -150,4 +223,5 @@ export enum DataKey {
     UserEquipKey = "userEquip",
     UserUseItemKey = "userUseItem",
     PlayerEquipKey = "playerEquip",
+    BattleDataKey = `BattleDataKey`,
 }

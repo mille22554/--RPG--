@@ -1,4 +1,3 @@
-import { warn } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import { ItemInfo } from "../DataBase/ItemInfo";
 import { PublicData } from "../DataBase/PublicData";
@@ -20,14 +19,16 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                     item.Speed =
                     item.Gold =
                         1;
-                item.Critical = item.Dodge = item.Lucky = 0.001;
+                item.Critical = item.Dodge = item.Lux = 0.001;
+                item.Text = `黏黏的`;
                 break;
             case DropItemName.DI1:
                 if (!item.Num) item.Num = 0;
                 item.AD = 3;
                 item.DEF = item.Speed = 1;
                 item.Gold = 2;
-                item.Critical = item.Dodge = item.Lucky = 0.001;
+                item.Critical = item.Dodge = item.Lux = 0.001;
+                item.Text = `修啦幹`;
                 break;
             case DropItemName.DI2:
                 if (!item.Num) item.Num = 0;
@@ -35,206 +36,236 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
                 item.MDF = 2;
                 item.Speed = 1;
                 item.Gold = 3;
-                item.Critical = item.Dodge = item.Lucky = 0.001;
+                item.Critical = item.Dodge = item.Lux = 0.001;
+                item.Text = `手指沒感覺了`;
                 break;
             case DropItemName.DI3:
                 if (!item.Num) item.Num = 0;
                 item.Speed = 2;
                 item.Gold = 4;
-                item.Critical = item.Dodge = item.Lucky = 0.002;
+                item.Critical = item.Dodge = item.Lux = 0.002;
+                item.Text = `跟沒拿東西一樣`;
                 break;
             case DropItemName.DI4:
                 if (!item.Num) item.Num = 0;
                 item.AD = item.AP = 1;
                 item.DEF = item.MDF = 3;
                 item.Gold = 5;
+                item.Text = `頂扣扣`;
                 break;
             //#endregion
             //#region 裝備
             case EquipmentType.E0:
-                item.AD = 5;
-                item.DEF = 3;
-                item.Critical = item.Dodge = item.Lucky = 0.005;
-                item.Speed = 10;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.AD = item.DEF = item.Speed = 20;
+                item.Critical = item.Dodge = 30;
+                item.Lux = 80;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E1:
-                item.DEF = 10;
-                item.MDF = 5;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.DEF = item.MDF = 70;
+                item.Speed = 30;
+                item.Dodge = 10;
+                item.Lux = 40;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E2:
-                item.DEF = 30;
-                item.MDF = 20;
-                item.Speed = -10;
-                item.Dodge = -0.005;
-                item.Gold = 500;
-                item.Durability = 100;
+                item.DEF = item.MDF = 450;
+                item.Speed = 500;
+                item.Dodge = -100;
+                item.Lux = 100;
+                item.Gold = item.Durability = 1000;
                 break;
             case EquipmentType.E3:
-                item.AP = 5;
-                item.MDF = 3;
-                item.Speed = 5;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.MDF = item.Speed = item.Dodge = 20;
+                item.AP = item.Critical = 40;
+                item.Lux = 60;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E4:
-                item.AP = 15;
-                item.MDF = 10;
-                item.Gold = 300;
-                item.Durability = 100;
+                item.AP = 200;
+                item.MDF = 100;
+                item.Speed = 80;
+                item.Critical = 30;
+                item.Lux = 150;
+                item.Gold = item.Durability = 1000;
                 break;
             case EquipmentType.E5:
-                item.AD = 15;
-                item.DEF = 10;
-                item.Gold = 300;
-                item.Durability = 100;
+                item.AD = item.Speed = 150;
+                item.DEF = 250;
+                item.Critical = 50;
+                item.Lux = 100;
+                item.Gold = item.Durability = 1000;
                 break;
             case EquipmentType.E6:
-                item.AD = 8;
-                item.DEF = 5;
-                item.Gold = 200;
-                item.Durability = 100;
+                item.AD = item.DEF = 90;
+                item.Speed = 37.5;
+                item.Critical = item.Dodge = 18.75;
+                item.Lux = 60;
+                item.Gold = item.Durability = 600;
                 break;
             case EquipmentType.E7:
-                item.AD = 8;
-                item.Critical = 0.01;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.AD = 90;
+                item.Speed = 48;
+                item.Critical = 72;
+                item.Dodge = 66;
+                item.Lux = 60;
+                item.Gold = item.Durability = 600;
                 break;
             case EquipmentType.E8:
-                item.AD = 20;
-                item.Critical = 0.03;
-                item.Gold = 300;
-                item.Durability = 100;
+                item.AD = 450;
+                item.Speed = item.Critical = 225;
+                item.Lux = 150;
+                item.Gold = item.Durability = 600;
                 break;
             case EquipmentType.E9:
-                item.AD = 3;
-                item.DEF = 3;
-                item.AP = 3;
-                item.MDF = 3;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.AD = item.AP = item.DEF = item.MDF = 30;
+                item.Speed = 20;
+                item.Lux = 60;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E10:
-                item.AD = 8;
-                item.DEF = 8;
-                item.AP = 8;
-                item.MDF = 8;
-                item.Gold = 300;
-                item.Durability = 100;
+                item.AD = item.Speed = item.Dodge = item.Lux = 60;
+                item.DEF = 30;
+                item.Critical = 90;
+                item.Gold = item.Durability = 600;
                 break;
             case EquipmentType.E11:
-                item.AD = 12;
-                item.Critical = item.Dodge = 0.01;
-                item.Speed = 5;
-                item.Gold = 300;
-                item.Durability = 100;
+                item.AD = 200;
+                item.DEF = 120;
+                item.Speed = 80;
+                item.Critical = 60;
+                item.Dodge = 100;
+                item.Gold = item.Durability = 1000;
                 break;
             case EquipmentType.E12:
-                item.AD = 8;
-                item.Dodge = 0.02;
-                item.Speed = 5;
-                item.Gold = 300;
-                item.Durability = 100;
+                item.AD = 48;
+                item.DEF = 12;
+                item.Speed = 6;
+                item.Critical = 30;
+                item.Dodge = 90;
+                item.Lux = 66;
+                item.Gold = item.Durability = 600;
                 break;
             case EquipmentType.E13:
-                item.AD = 3;
-                item.Critical = item.Dodge = 0.01;
-                item.Speed = 8;
-                item.Gold = 200;
-                item.Durability = 100;
+                item.AD = item.DEF = item.Speed = 10;
+                item.Critical = item.Dodge = 60;
+                item.Lux = 30;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E14:
-                item.DEF = 5;
-                item.MDF = 5;
-                item.Speed = 3;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.AD = item.AP = 6;
+                item.DEF = item.MDF = 90;
+                item.Speed = 42;
+                item.Dodge = 30;
+                item.Lux = 60;
+                item.Gold = item.Durability = 600;
                 break;
             case EquipmentType.E15:
-                item.DEF = 3;
-                item.MDF = 3;
-                item.Dodge = 0.005;
-                item.Speed = 3;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.AD = item.AP = 8;
+                item.DEF = item.MDF = 50;
+                item.Speed = item.Dodge = 32;
+                item.Critical = 4;
+                item.Lux = 40;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E16:
-                item.DEF = 20;
-                item.MDF = 20;
-                item.Speed = -10;
-                item.Gold = 500;
-                item.Durability = 100;
+                item.AD = item.AP = 37.5;
+                item.DEF = item.MDF = 600;
+                item.Speed = 675;
+                item.Dodge = -150;
+                item.Lux = 150;
+                item.Gold = item.Durability = 1500;
                 break;
             case EquipmentType.E17:
-                item.DEF = 2;
-                item.MDF = 2;
-                item.Dodge = 0.01;
-                item.Speed = 8;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.AD = item.AP = 2;
+                item.DEF = item.MDF = 40;
+                item.Speed = 12;
+                item.Dodge = 48;
+                item.Lux = 40;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E18:
-                item.DEF = 8;
-                item.MDF = 8;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.AD = item.AP = 8;
+                item.DEF = item.MDF = 70;
+                item.Speed = item.Lux = 40;
+                item.Critical = 4;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E19:
-                item.DEF = 2;
-                item.MDF = 2;
-                item.Critical = 0.01;
-                item.Gold = 100;
-                item.Durability = 100;
+                item.AD = item.AP = 10;
+                item.DEF = item.MDF = 40;
+                item.Speed = 32;
+                item.Critical = 52;
+                item.Lux = 40;
+                item.Gold = item.Durability = 400;
                 break;
             case EquipmentType.E20:
-                item.Critical = 0.005;
-                item.Speed = 3;
-                item.Gold = 50;
-                item.Durability = 100;
+                item.AD =
+                    item.AP =
+                    item.DEF =
+                    item.MDF =
+                    item.Speed =
+                    item.Dodge =
+                        10;
+                item.Critical = item.Lux = 20;
+                item.Gold = item.Durability = 200;
                 break;
             case EquipmentType.E21:
-                item.Lucky = 0.005;
-                item.Gold = 50;
-                item.Durability = 100;
+                item.AD = item.AP = item.DEF = item.MDF = 5;
+                item.Speed = 10;
+                item.Critical = 16;
+                item.Dodge = 14;
+                item.Lux = 40;
+                item.Gold = item.Durability = 200;
                 break;
             case EquipmentType.E22:
-                item.Critical = item.Dodge = item.Lucky = 0.002;
-                item.Gold = 50;
-                item.Durability = 100;
+                item.AD = item.AP = item.DEF = item.MDF = 1.25;
+                item.Speed = 1;
+                item.Critical = item.Dodge = 10;
+                item.Lux = 16;
+                item.Gold = item.Durability = 100;
                 break;
             case EquipmentType.E23:
-                item.AP = item.MDF = 2;
-                item.Gold = 50;
-                item.Durability = 100;
+                item.AD = item.AP = 1;
+                item.DEF = item.MDF = item.Speed = item.Dodge = 10;
+                item.Lux = 58;
+                item.Gold = item.Durability = 200;
                 break;
             case EquipmentType.E24:
-                item.Dodge = 0.003;
-                item.Gold = 50;
-                item.Durability = 100;
+                item.AD = item.AP = 0.5;
+                item.DEF = item.MDF = 4;
+                item.Dodge = 8;
+                item.Critical = item.Dodge = 10;
+                item.Lux = 19;
+                item.Gold = item.Durability = 100;
                 break;
             case EquipmentType.E25:
-                item.Speed = 6;
-                item.Gold = 50;
-                item.Durability = 100;
+                item.AD = item.AP = 3;
+                item.DEF = item.MDF = 16;
+                item.Speed = 12;
+                item.Dodge = 24;
+                item.Lux = 30;
+                item.Gold = item.Durability = 200;
                 break;
             case EquipmentType.E26:
-                item.Dodge = 0.006;
-                item.Gold = 50;
-                item.Durability = 100;
+                item.AD = item.AP = 5;
+                item.DEF = item.MDF = 18;
+                item.Dodge = item.Dodge = 10;
+                item.Critical = 4;
+                item.Lux = 30;
+                item.Gold = item.Durability = 200;
                 break;
             //#endregion
             //#region 消耗品
             case UseItemName.UI0:
                 item.HP = 50;
                 item.Gold = 50;
+                item.Text = `HP回50`;
                 break;
             case UseItemName.UI1:
                 item.Stamina = 50;
                 item.Gold = 100;
+                item.Text = `體力回50`;
                 break;
             //#endregion
         }
@@ -244,7 +275,6 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
         let array = [];
         for (let i of PublicData.getInstance.userItem.userEquip)
             array.push(i.ID);
-        warn(ID, array, array.indexOf(ID));
         if (array.indexOf(ID) != -1)
             return PublicData.getInstance.userItem.userEquip[array.indexOf(ID)];
         else return null;
@@ -253,7 +283,6 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
         let array = [];
         for (let i of PublicData.getInstance.userItem.userEquip)
             array.push(i.ID);
-        warn(array, array.indexOf(ID));
         if (array.indexOf(ID) != -1)
             PublicData.getInstance.userItem.userEquip.splice(
                 array.indexOf(ID),

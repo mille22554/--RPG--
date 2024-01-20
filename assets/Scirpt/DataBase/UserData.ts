@@ -45,5 +45,5 @@ export class UserEuqipInfo {
     Dodge = 0;
     Critical = 0;
     Speed = 0;
-    Lucky = 0;
+    Lux = 0;
 }

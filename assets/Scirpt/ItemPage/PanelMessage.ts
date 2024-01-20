@@ -37,6 +37,8 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     @property(Label)
     Dodge: Label;
     @property(Label)
+    Lux: Label;
+    @property(Label)
     Gold: Label;
     @property(Label)
     Num: Label;
@@ -54,14 +56,23 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     protected onLoad(): void {
         super.onLoad();
         this.hide();
-        this.setEvent(EventEnum.switchPanelMessageEquip,this.switchPanelMessageEquip)
-        this.setEvent(EventEnum.switchPanelMessageSozai,this.switchPanelMessageSozai)
-        this.setEvent(EventEnum.switchPanelMessageUse,this.switchPanelMessageUse)
-        this.setEvent(EventEnum.equip,this.equip)
+        this.setEvent(
+            EventEnum.switchPanelMessageEquip,
+            this.switchPanelMessageEquip
+        );
+        this.setEvent(
+            EventEnum.switchPanelMessageSozai,
+            this.switchPanelMessageSozai
+        );
+        this.setEvent(
+            EventEnum.switchPanelMessageUse,
+            this.switchPanelMessageUse
+        );
+        this.setEvent(EventEnum.equip, this.equip);
     }
-    show(...any: any[]): void {
+    async show(...any: any[]): Promise<void> {
         super.show();
-        SaveAndLoad.getInstance.loadItemData();
+        await SaveAndLoad.getInstance.loadItemData();
         this.editbox.textLabel.string = `0`;
     }
     switchPanelMessageEquip(info: ItemInfo) {
@@ -81,6 +92,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.Speed.string = `速度 ${info.Speed.toString()}`;
         this.Critical.string = `爆擊 ${info.Critical.toString()}`;
         this.Dodge.string = `迴避 ${info.Dodge.toString()}`;
+        this.Lux.string = `幸運 ${info.Lux.toString()}`;
         this.Gold.string = `$ ${(info.Gold / 2).toString()}`;
         this.Num.string = ``;
         this.Equip.string = this.nowItemClass.Equip.string;
@@ -107,6 +119,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.Speed.string = ``;
         this.Critical.string = ``;
         this.Dodge.string = ``;
+        this.Lux.string = ``;
         this.Gold.string = `$ ${info.Gold.toString()}`;
         this.Num.string = `X${info.Num.toString()}`;
         this.btnEquip.active = false;
@@ -132,16 +145,17 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.Speed.string = ``;
         this.Critical.string = ``;
         this.Dodge.string = ``;
+        this.Lux.string = ``;
         this.Gold.string = `$ ${(info.Gold / 2).toString()}`;
         this.Num.string = `X${info.Num.toString()}`;
         this.Equip.string = `使用`;
         this.btnEquip.active = true;
         this.saleNum.active = true;
     }
-    EquipORUse() {
-        SaveAndLoad.getInstance.loadUserData();
-        SaveAndLoad.getInstance.loadPlayerEquipData();
-        SaveAndLoad.getInstance.loadItemData();
+    async EquipORUse() {
+        await SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadPlayerEquipData();
+        await SaveAndLoad.getInstance.loadItemData();
         switch (this.nowType) {
             case `equipment`:
                 this.nowItemClass =
@@ -236,9 +250,9 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             this.eventEmit(EventEnum.refreshItemPage);
         }
     }
-    sale() {
-        SaveAndLoad.getInstance.loadUserData();
-        SaveAndLoad.getInstance.loadItemData();
+    async sale() {
+        await SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadItemData();
         if (PublicData.getInstance.userData.isField) return;
         switch (this.nowType) {
             case `equipment`:

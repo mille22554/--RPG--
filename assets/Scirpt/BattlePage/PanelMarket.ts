@@ -38,10 +38,10 @@ export default class PanelMarket extends BaseSingletonComponent<PanelMarket>() {
     openTownShop() {
         this.loadEquipmentItem();
     }
-    loadEquipmentItem() {
+    async loadEquipmentItem() {
         PanelBuyInfo.instance.hide();
         EasyCode.getInstance.putInPool(`souhin`);
-        SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadUserData();
         for (let key in PublicData.getInstance.item.equipment) {
             let item = EasyCode.getInstance
                 .getFromPool(`souhin`)
@@ -54,10 +54,10 @@ export default class PanelMarket extends BaseSingletonComponent<PanelMarket>() {
             item.info = PublicData.getInstance.item.equipment[key];
         }
     }
-    loadUseItem() {
+    async loadUseItem() {
         PanelBuyInfo.instance.hide();
         EasyCode.getInstance.putInPool(`souhin`);
-        SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadUserData();
         for (let key in PublicData.getInstance.item.useItem) {
             let item = EasyCode.getInstance
                 .getFromPool(`souhin`)

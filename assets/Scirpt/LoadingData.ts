@@ -29,8 +29,9 @@ class LoaingData extends BaseComponent {
                 type
             );
         }
-        
+
         await SaveAndLoad.getInstance.startGameLoad();
+        SaveAndLoad.getInstance.UpdateData();
         SetUserInfo.getInstance.setUserInfo();
 
         instantiate(this.battlePage).parent = this.node;

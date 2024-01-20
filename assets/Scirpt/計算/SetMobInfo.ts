@@ -89,11 +89,12 @@ export class SetMobInfo extends BaseSingleton<SetMobInfo>() {
         data.AP = data.Int;
         data.DEF = Math.floor(data.Vit / 2);
         data.MDF = Math.floor(data.Int / 2);
-        data.Speed = data.Dex * 4 + data.Agi;
-        data.Dodge = (data.Agi * 0.25 + data.Dex * 0.2 + data.Lux * 0.05) / 100;
-        data.Critical =
-            (data.Agi * 0.3 + data.Dex * 0.15 + data.Lux * 0.05) / 100;
-        data.Lucky = (data.Lux * 0.5) / 100;
+        data.Speed = (data.Dex * 4 + data.Agi + 100) / 100;
+        data.Dodge = Math.floor((data.Agi * 5 + data.Dex * 4 + data.Lux) / 10);
+        data.Critical = Math.floor(
+            (data.Agi * 6 + data.Dex * 3 + data.Lux) / 10
+        );
+        data.Lucky = data.Lux * 0.5;
         return data;
     }
     setMobDrop(mobName: string) {

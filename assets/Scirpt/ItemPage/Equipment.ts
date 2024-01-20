@@ -15,13 +15,18 @@ export default class Equipment extends BaseComponent {
     @property(Label)
     Durability: Label;
     @property(Label)
+    Text: Label;
+    @property(Label)
     Type: Label;
     info: ItemInfo;
     protected start(): void {
-        this.init();
         this.setEvent(EventEnum.init, this.init);
     }
     init() {
+        this.Name.string = this.info.Name;
+        this.Type.string = this.info.Type;
+        this.Durability.string = `耐久 ${this.info.Durability.toString()}`;
+        this.Text.string = this.info.Text;
         if (this.info.isEquip) this.Equip.string = `裝備中`;
         else this.Equip.string = `裝備`;
         this.node.setSiblingIndex(
@@ -35,10 +40,10 @@ export default class Equipment extends BaseComponent {
     setEuqipText(type) {
         if (this.Type == type) this.Equip.string = `裝備`;
     }
-    btnEquip() {
-        SaveAndLoad.getInstance.loadUserData();
-        SaveAndLoad.getInstance.loadPlayerEquipData();
-        SaveAndLoad.getInstance.loadItemData();
+    async btnEquip() {
+        await SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadPlayerEquipData();
+        await SaveAndLoad.getInstance.loadItemData();
         SetItemInfo.getInstance.findEquipByID(this.info.ID).isEquip =
             this.info.isEquip = !this.info.isEquip;
             this.eventEmit(EventEnum.equip, this);

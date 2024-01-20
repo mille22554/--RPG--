@@ -9,7 +9,7 @@ export class ItemInfo {
     Dodge: number = 0;
     Critical: number = 0;
     Speed: number = 0;
-    Lucky: number = 0;
+    Lux: number = 0;
     Num: number = 0;
     Gold: number = 0;
     Durability: number = 0;
@@ -17,6 +17,7 @@ export class ItemInfo {
     MP: number = 0;
     Stamina: number = 0;
     isEquip: boolean = false;
+    Text: string = ``;
 }
 export class ItemType {
     dropItem = new DropItem();
@@ -47,7 +48,7 @@ export class Equipment {
     單手斧 = new ItemInfo();
     雙手斧 = new ItemInfo();
     單手棍 = new ItemInfo();
-    雙手棍 = new ItemInfo();
+    刺劍 = new ItemInfo();
     長槍 = new ItemInfo();
     弓箭 = new ItemInfo();
     指虎 = new ItemInfo();

@@ -44,11 +44,11 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
         this.type = `Equipment`;
         this.selectType(null);
     }
-    selectType(e?) {
+    async selectType(e?) {
         if (e != null) this.type = e.target.name;
         PanelMessage.instance.hide();
         this.setScrollViewHeight();
-        SaveAndLoad.getInstance.loadItemData();
+        await SaveAndLoad.getInstance.loadItemData();
         EasyCode.getInstance.putInPool(`sozai`);
         EasyCode.getInstance.putInPool(`equipment`);
         EasyCode.getInstance.putInPool(`use`);
@@ -59,15 +59,8 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                         .getFromPool(`equipment`)
                         .getComponent(Equipment);
                     item.node.parent = this.content;
-                    item.Name.string = i.Name;
-                    item.Type.string = i.Type;
-                    item.Durability.string = `耐久 ${i.Durability.toString()}`;
-
-                    // PublicData.getInstance.userItem.userEquip[
-                    //     PublicData.getInstance.userItem.userEquip.indexOf(i)
-                    // ].ID = PublicData.getInstance.userItem.userEquip.indexOf(i);
-
                     item.info = i;
+                    item.init()
                 }
                 this.eventEmit(EventEnum.init);
                 PanelMessage.instance.nowType = `equipment`;
@@ -86,10 +79,8 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                         .getFromPool(`sozai`)
                         .getComponent(Sozai);
                     item.node.parent = this.content;
-                    item.Num.string = `X${PublicData.getInstance.userItem.userDropItem[i].Num}`;
-                    item.Name.string =
-                        PublicData.getInstance.userItem.userDropItem[i].Name;
                     item.info = PublicData.getInstance.userItem.userDropItem[i];
+                    item.init()
                 }
                 PanelMessage.instance.nowType = `sozai`;
                 SaveAndLoad.getInstance.saveItemData(
@@ -105,10 +96,8 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                         .getFromPool(`use`)
                         .getComponent(UseItem);
                     item.node.parent = this.content;
-                    item.Num.string = `X${PublicData.getInstance.userItem.userUseItem[i].Num}`;
-                    item.Name.string =
-                        PublicData.getInstance.userItem.userUseItem[i].Name;
                     item.info = PublicData.getInstance.userItem.userUseItem[i];
+                    item.init()
                 }
                 PanelMessage.instance.nowType = `use`;
                 SaveAndLoad.getInstance.saveItemData(

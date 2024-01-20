@@ -28,15 +28,17 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
     @property(Label)
     Dodge: Label;
     @property(Label)
+    Lux: Label;
+    @property(Label)
     Gold: Label;
     nowItemInfo: ItemInfo;
     protected onLoad(): void {
         super.onLoad();
         this.hide();
     }
-    show(...any: any[]): void {
+    async show(...any: any[]): Promise<void> {
         super.show();
-        SaveAndLoad.getInstance.loadItemData();
+        await SaveAndLoad.getInstance.loadItemData();
         this.eventEmit(EventEnum.setScrollViewHeightPM);
     }
     hide(): void {
@@ -55,6 +57,7 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
         this.Speed.string = `速度 ${info.Speed.toString()}`;
         this.Critical.string = `爆擊 ${info.Critical.toString()}`;
         this.Dodge.string = `迴避 ${info.Dodge.toString()}`;
+        this.Lux.string = `幸運 ${info.Lux.toString()}`;
         this.Gold.string = `$ ${info.Gold.toString()}`;
     }
     switchUse(info: ItemInfo) {
@@ -69,11 +72,12 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
         this.Speed.string = ``;
         this.Critical.string = ``;
         this.Dodge.string = ``;
+        this.Lux.string = ``;
         this.Gold.string = `$ ${info.Gold.toString()}`;
     }
-    buy() {
-        SaveAndLoad.getInstance.loadUserData();
-        SaveAndLoad.getInstance.loadItemData();
+    async buy() {
+        await SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadItemData();
         for (let type in PublicData.getInstance.item)
             for (let key in PublicData.getInstance.item[type]) {
                 if (

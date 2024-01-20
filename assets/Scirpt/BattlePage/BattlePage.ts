@@ -6,6 +6,7 @@ import {
     _decorator,
     randomRange,
     randomRangeInt,
+    warn,
 } from "cc";
 import BaseSingletonComponent from "../../Model/Singleton/BaseSingletonComponent";
 import { MyColor } from "../DataBase/MyColor";
@@ -20,6 +21,7 @@ import PanelLog from "./PanelLog";
 import PanelPlace from "./PanelPlace";
 import PanelMarket from "./PanelMarket";
 import PlayerEquip from "../DataBase/PlayerEquip";
+import { BattleData } from "../DataBase/BattleData";
 
 const { ccclass, property } = _decorator;
 @ccclass("BattlePage")
@@ -58,7 +60,7 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
         this.setEvent(EventEnum.infoLabelRefresh, this.infoLabelRefresh);
         this.setEvent(EventEnum.setBtnLabel, this.setBtnLabel);
     }
-    protected start(): void {
+    protected async start(): Promise<void> {
         if (PublicData.getInstance.userData.isField) {
             this.home.active = false;
             this.field.active = true;
@@ -67,7 +69,7 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
             PanelLog.instance.addLog(`進入了${this.zoneName.string}`);
 
             if (PublicData.getInstance.userData.isBattle) {
-                SaveAndLoad.getInstance.loadMobData();
+                await SaveAndLoad.getInstance.loadMobData();
                 this.labelBtn1.string = `戰鬥`;
                 this.labelBtn2.string = `技能`;
                 this.labelBtn3.string = `撤退`;
@@ -93,8 +95,15 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
         );
         Stamina -= 1;
 
-        for (let i of PublicData.getInstance.mobData)
-            if (i.Dodge > randomRange(0, 1)) {
+        for (let mob of PublicData.getInstance.mobData) {
+            let dodge = 0,
+                hit = 0;
+            for (let i = 0; i < PublicData.getInstance.userData.Dodge; i++)
+                if (randomRangeInt(0, 2) == 0) hit++;
+            for (let i = 0; i < mob.Dodge; i++)
+                if (randomRangeInt(0, 100) == 0) dodge++;
+
+            if (dodge > hit) {
                 PanelLog.instance.addLog(`逃跑失敗`, Color.RED);
                 //體力判定
                 if (Stamina <= 0) {
@@ -113,6 +122,7 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
                 }
                 return;
             }
+        }
 
         PanelLog.instance.addLog(
             `${PublicData.getInstance.userData.Name}逃跑了`,
@@ -135,12 +145,11 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
     }
     MessageSwitch() {
         if (PublicData.getInstance.userData.isBattle) {
-            if (Battle.getInstance.PlayerSpeed >= 1500) {
-                Battle.getInstance.PlayerSpeed -= 1500;
+            if (PublicData.getInstance.battleData.PlayerSpeed >= 100) {
+                PublicData.getInstance.battleData.PlayerSpeed -= 100;
                 this.escape();
-            }
-            else if (Battle.getInstance.PlayerSpeed2 >= 1500) {
-                Battle.getInstance.PlayerSpeed2 -= 1500;
+            } else if (PublicData.getInstance.battleData.PlayerSpeed2 >= 100) {
+                PublicData.getInstance.battleData.PlayerSpeed2 -= 100;
                 this.escape();
             }
             return;
@@ -161,18 +170,18 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
     MessageCancel() {
         this.panelMessage.active = false;
     }
-    GoForward() {
+    async GoForward() {
         if (this.panelMessage.active) return;
 
-        SaveAndLoad.getInstance.loadUserData();
-        SaveAndLoad.getInstance.loadMobData();
-        SaveAndLoad.getInstance.loadPlayerEquipData();
-        SaveAndLoad.getInstance.loadItemData();
+        await SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadMobData();
+        await SaveAndLoad.getInstance.loadPlayerEquipData();
+        await SaveAndLoad.getInstance.loadItemData();
 
         if (PublicData.getInstance.userData.isBattle) {
             if (
-                Battle.getInstance.PlayerSpeed >= 1500 ||
-                Battle.getInstance.PlayerSpeed2 >= 1500
+                PublicData.getInstance.battleData.PlayerSpeed >= 100 ||
+                PublicData.getInstance.battleData.PlayerSpeed2 >= 100
             )
                 Battle.getInstance.Battel();
             return;
@@ -212,7 +221,7 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
             else if (mobNum > 93 && mobNum < 98) mobNum = 5;
             else mobNum = 6;
             PublicData.getInstance.mobData = [new UserData()];
-            Battle.getInstance.isPlayerTurn = false;
+            PublicData.getInstance.battleData.isPlayerTurn = false;
             for (let i = 0; i < mobNum; i++) {
                 mobType = randomRangeInt(
                     Math.floor(PublicData.getInstance.userData.AreaLevel / 30) -
@@ -250,7 +259,7 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
                 }${i + 1}`;
                 PublicData.getInstance.mobData[i].HP =
                     PublicData.getInstance.mobData[i].HP.split(`/`)[0];
-                Battle.getInstance.mobSpeed[i] = 0;
+                PublicData.getInstance.battleData.mobSpeed[i] = 0;
 
                 PanelLog.instance.addLog(
                     `${PublicData.getInstance.mobData[i].Name}出現了!`,
@@ -272,8 +281,8 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
         SaveAndLoad.getInstance.saveMobData(PublicData.getInstance.mobData);
         this.infoLabelRefresh();
     }
-    infoLabelRefresh() {
-        SaveAndLoad.getInstance.loadUserData();
+    async infoLabelRefresh() {
+        await SaveAndLoad.getInstance.loadUserData();
         this.conLabelInfo[`Name`].string =
             PublicData.getInstance.userData[`Name`].toString();
         this.conLabelInfo[`HP`].string = `HP ${PublicData.getInstance.userData[
@@ -310,6 +319,8 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
             SaveAndLoad.getInstance.saveItemData(null, type);
         }
         SaveAndLoad.getInstance.savePlayerEquipData(new PlayerEquip());
+        SaveAndLoad.getInstance.saveMobData([]);
+        SaveAndLoad.getInstance.saveBattleData(new BattleData());
 
         await SaveAndLoad.getInstance.startGameLoad();
         SetUserInfo.getInstance.setUserInfo();

@@ -13,7 +13,6 @@ import { SetItemInfo } from "./SetItemInfo";
 export class SetUserEquip extends BaseSingleton<SetUserEquip>() {
     item: Equipment;
     set(item) {
-        warn(item.info);
         this.item = item;
         if (this.item.info.isEquip) {
             switch (item.info.Type) {

@@ -10,9 +10,16 @@ export default class UseItem extends BaseComponent {
     Name: Label;
     @property(Label)
     Num: Label;
+    @property(Label)
+    Text: Label;
     info: ItemInfo;
+    init() {
+        this.Num.string = `X${this.info.Num}`;
+        this.Name.string = this.info.Name;
+        this.Text.string = this.info.Text;
+    }
     openInfo() {
         this.eventEmit(EventEnum.switchPanelMessageUse, this.info);
-        this.eventEmit(EventEnum.setScrollViewHeightIP)
+        this.eventEmit(EventEnum.setScrollViewHeightIP);
     }
 }

@@ -16,44 +16,47 @@ import { SetItemInfo } from "./SetItemInfo";
 
 export class Battle extends BaseSingleton<Battle>() {
     speedTimer: number;
-    PlayerSpeed = 0;
-    PlayerSpeed2 = 0;
-    mobSpeed: number[] = [0];
-    isPlayerTurn: boolean;
     runSpeed() {
         this.speedTimer = setInterval(() => {
             if (PublicData.getInstance.userData.isBattle) {
-                if (this.PlayerSpeed < 1500 && this.PlayerSpeed2 < 1500) {
+                if (
+                    PublicData.getInstance.battleData.PlayerSpeed < 100 &&
+                    PublicData.getInstance.battleData.PlayerSpeed2 < 100
+                ) {
                     for (let i of PublicData.getInstance.mobData) {
                         if (
-                            this.mobSpeed[
+                            PublicData.getInstance.battleData.mobSpeed[
                                 PublicData.getInstance.mobData.indexOf(i)
-                            ] >= 1500
+                            ] >= 100
                         )
                             this.mobAction(
                                 PublicData.getInstance.mobData.indexOf(i)
                             );
                         else
-                            this.mobSpeed[
+                            PublicData.getInstance.battleData.mobSpeed[
                                 PublicData.getInstance.mobData.indexOf(i)
                             ] += i.Speed;
                     }
-                    this.PlayerSpeed += PublicData.getInstance.userData.Speed;
+                    PublicData.getInstance.battleData.PlayerSpeed +=
+                        PublicData.getInstance.userData.Speed;
                     for (let type in EquipPart.getInstance.rightHand)
                         if (
                             PublicData.getInstance.playerEquip.leftHand.Type ==
                             type
                         )
-                            this.PlayerSpeed2 +=
+                            PublicData.getInstance.battleData.PlayerSpeed2 +=
                                 PublicData.getInstance.userData.Speed;
                 } else {
-                    if (!this.isPlayerTurn) {
+                    if (!PublicData.getInstance.battleData.isPlayerTurn) {
                         for (let i of PublicData.getInstance.mobData)
                             PanelLog.instance.addLog(
                                 `${i.Name} LV${i.Level} HP${i.HP}`,
                                 Color.YELLOW
                             );
-                        this.isPlayerTurn = true;
+                        PublicData.getInstance.battleData.isPlayerTurn = true;
+                        SaveAndLoad.getInstance.saveBattleData(
+                            PublicData.getInstance.battleData
+                        );
                     }
                 }
             }
@@ -61,17 +64,16 @@ export class Battle extends BaseSingleton<Battle>() {
     }
     Battel() {
         //#region 宣告
+
         let target = randomRangeInt(0, PublicData.getInstance.mobData.length),
             hp = Number(
                 PublicData.getInstance.mobData[target].HP.split(`/`)[0]
             ),
-            critical =
-                PublicData.getInstance.userData.Critical > randomRange(0, 1)
-                    ? 2
-                    : 1,
+            critical = 0,
             dmg = Math.floor(
                 (PublicData.getInstance.userData.Lux +
-                    PublicData.getInstance.userExtra.Lux) *
+                    PublicData.getInstance.userExtra.Lux +
+                    PublicData.getInstance.userEuqipInfo.Lux) *
                     2 *
                     randomRange(0.5, 1)
             ),
@@ -81,18 +83,8 @@ export class Battle extends BaseSingleton<Battle>() {
             isLeft = false;
         //#endregion
 
-        if (this.PlayerSpeed >= 1500) this.PlayerSpeed -= 1500;
-        else {
-            this.PlayerSpeed2 -= 1500;
-            isLeft = true;
-        }
-        this.isPlayerTurn = false;
-        Stamina -= 1;
-        PublicData.getInstance.userData.Stamina = `${Stamina}/${
-            PublicData.getInstance.userData.Stamina.split(`/`)[1]
-        }`;
         //#region 幸運判定
-        this.luckyEvent(
+        hp = this.luckyEvent(
             hp,
             PublicData.getInstance.userData,
             PublicData.getInstance.mobData[target],
@@ -107,12 +99,27 @@ export class Battle extends BaseSingleton<Battle>() {
             )
         )
             return;
+        PublicData.getInstance.mobData[target].HP = `${hp}`;
         //#endregion
+        if (PublicData.getInstance.battleData.PlayerSpeed >= 100)
+            PublicData.getInstance.battleData.PlayerSpeed -= 100;
+        else {
+            PublicData.getInstance.battleData.PlayerSpeed2 -= 100;
+            isLeft = true;
+        }
+        PublicData.getInstance.battleData.isPlayerTurn = false;
+        Stamina -= 1;
+        PublicData.getInstance.userData.Stamina = `${Stamina}/${
+            PublicData.getInstance.userData.Stamina.split(`/`)[1]
+        }`;
         //#region 迴避判定
-        this.RunDodge(
-            PublicData.getInstance.userData,
-            PublicData.getInstance.mobData[target]
-        );
+        if (
+            this.RunDodge(
+                PublicData.getInstance.userData,
+                PublicData.getInstance.mobData[target]
+            )
+        )
+            return;
         //#endregion
         //#region 武器種類判定
         let base: number;
@@ -120,6 +127,12 @@ export class Battle extends BaseSingleton<Battle>() {
             base,
             PublicData.getInstance.playerEquip.rightHand.Type
         );
+        //#endregion
+        //#region 爆擊判定
+        for (let i = 0; i < PublicData.getInstance.userData.Critical; i++)
+            if (i == randomRangeInt(0, 3)) critical++;
+        if (critical > randomRangeInt(0, 100)) critical = 2;
+        else critical = 1;
         //#endregion
         //#region 傷害判定
         dmg = Math.floor(
@@ -147,7 +160,6 @@ export class Battle extends BaseSingleton<Battle>() {
                         PublicData.getInstance.playerEquip.leftHand.ID
                     );
                 item.Durability -= 1;
-                warn(PublicData.getInstance.playerEquip.leftHand.Durability);
                 if (item.Durability <= 0) {
                     SetItemInfo.getInstance.delectEquipByID(
                         PublicData.getInstance.playerEquip.leftHand.ID
@@ -163,7 +175,6 @@ export class Battle extends BaseSingleton<Battle>() {
                         PublicData.getInstance.playerEquip.rightHand.ID
                     );
                 item.Durability -= 1;
-                warn(PublicData.getInstance.playerEquip.rightHand.Durability);
                 if (item.Durability <= 0) {
                     SetItemInfo.getInstance.delectEquipByID(
                         PublicData.getInstance.playerEquip.rightHand.ID
@@ -212,24 +223,20 @@ export class Battle extends BaseSingleton<Battle>() {
         PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
         //#endregion
     }
-    mobAction(target: number) {
-        SaveAndLoad.getInstance.loadUserData();
-        SaveAndLoad.getInstance.loadItemData();
+    async mobAction(target: number) {
+        await SaveAndLoad.getInstance.loadUserData();
+        await SaveAndLoad.getInstance.loadItemData();
 
-        this.mobSpeed[target] -= 1500;
+        PublicData.getInstance.battleData.mobSpeed[target] -= 100;
         let hp = Number(PublicData.getInstance.userData.HP.split(`/`)[0]),
-            critical =
-                PublicData.getInstance.mobData[target].Critical >
-                randomRange(0, 1)
-                    ? 2
-                    : 1,
+            critical = 0,
             dmg = Math.floor(
                 PublicData.getInstance.mobData[target].Lux *
                     2 *
                     randomRange(0.5, 1)
             );
         //#region 幸運判定
-        this.luckyEvent(
+        hp = this.luckyEvent(
             hp,
             PublicData.getInstance.mobData[target],
             PublicData.getInstance.userData,
@@ -239,13 +246,23 @@ export class Battle extends BaseSingleton<Battle>() {
             return;
         //#endregion
         //#region 迴避判定
-        if (PublicData.getInstance.userData.Dodge > randomRange(0, 1)) {
-            PanelLog.instance.addLog(
-                `${PublicData.getInstance.mobData[target].Name}的攻擊，但${PublicData.getInstance.userData.Name}躲開了`,
-                Color.GRAY
-            );
+        if (
+            this.RunDodge(
+                PublicData.getInstance.mobData[target],
+                PublicData.getInstance.userData
+            )
+        )
             return;
-        }
+        //#endregion
+        //#region 爆擊判定
+        for (
+            let i = 0;
+            i < PublicData.getInstance.mobData[target].Critical;
+            i++
+        )
+            if (i == randomRangeInt(0, 3)) critical++;
+        if (critical > randomRangeInt(0, 100)) critical = 2;
+        else critical = 1;
         //#endregion
         //#region 傷害判定
         dmg = Math.floor(
@@ -291,19 +308,13 @@ export class Battle extends BaseSingleton<Battle>() {
                 } else if (part == EquipPartEnum.ring) {
                     for (let i of PublicData.getInstance.playerEquip.ring)
                         if (i.ID != -1) {
-                            try {
-                                i = item =
-                                    SetItemInfo.getInstance.findEquipByID(i.ID);
-                                item.Durability -= 1;
-                                if (item.Durability <= 0) {
-                                    SetItemInfo.getInstance.delectEquipByID(
-                                        i.ID
-                                    );
-                                    i = new ItemInfo();
-                                }
-                            } catch {
-                                warn(i.ID);
-                                warn(item);
+                            i = item = SetItemInfo.getInstance.findEquipByID(
+                                i.ID
+                            );
+                            item.Durability -= 1;
+                            if (item.Durability <= 0) {
+                                SetItemInfo.getInstance.delectEquipByID(i.ID);
+                                i = new ItemInfo();
                             }
                         }
                 } else if (
@@ -346,7 +357,13 @@ export class Battle extends BaseSingleton<Battle>() {
     }
     luckyEvent(hp: number, hiter: UserData, behiter: UserData, dmg: number) {
         //幸運判定
-        if (hiter.Lucky > randomRange(0, 1)) {
+        let Lucky = 0,
+            Lucky2 = 0;
+        for (let i = 0; i < hiter.Lucky; i++)
+            if (randomRangeInt(0, 100) == 0) Lucky++;
+        for (let i = 0; i < behiter.Lucky; i++)
+            if (randomRangeInt(0, 2) == 0) Lucky2++;
+        if (Lucky > Lucky2) {
             hp -= dmg;
             PanelLog.instance.addLog(
                 `${behiter.Name}突然抽筋，受到了${dmg}點傷害`,
@@ -356,22 +373,38 @@ export class Battle extends BaseSingleton<Battle>() {
         return hp;
     }
     RunDodge(hiter: UserData, behiter: UserData) {
-        if (behiter.Dodge > randomRange(0, 1)) {
+        let dodge = 0,
+            hit = 0;
+        for (let i = 0; i < hiter.Dodge; i++)
+            if (randomRangeInt(0, 2) == 0) hit++;
+        for (let i = 0; i < behiter.Dodge; i++)
+            if (randomRangeInt(0, 100) == 0) dodge++;
+        if (dodge > hit) {
             PanelLog.instance.addLog(
                 `${hiter.Name}的攻擊，但${behiter.Name}躲開了`,
                 Color.GRAY
             );
-            return;
+            SaveAndLoad.getInstance.saveUserData(
+                PublicData.getInstance.userData,
+                PublicData.getInstance.userExtra
+            );
+            SaveAndLoad.getInstance.saveMobData(PublicData.getInstance.mobData);
+            return true;
         }
     }
-    RunWeapon(base, Type) {
+    RunWeapon(base: number, Type: string) {
         switch (Type) {
+            case EquipmentType.E2:
+                base =
+                    (PublicData.getInstance.userData.DEF +
+                        PublicData.getInstance.userData.MDF) /
+                    2;
+                break;
             case EquipmentType.E3:
             case EquipmentType.E4:
                 base = PublicData.getInstance.userData.AP;
                 break;
             case EquipmentType.E9:
-            case EquipmentType.E10:
                 base =
                     (PublicData.getInstance.userData.AP +
                         PublicData.getInstance.userData.AD) /
