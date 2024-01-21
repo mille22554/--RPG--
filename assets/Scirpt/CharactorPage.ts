@@ -28,8 +28,8 @@ export default class CharactorPage extends BaseSingletonComponent<CharactorPage>
         super.show();
         this.UserDataLoad();
     }
-    async UserDataLoad() {
-        await SaveAndLoad.getInstance.loadUserData();
+    UserDataLoad() {
+        SaveAndLoad.getInstance.loadUserData();
 
         for (let i of [
             `Name`,
@@ -64,8 +64,8 @@ export default class CharactorPage extends BaseSingletonComponent<CharactorPage>
             );
         }
     }
-    async addPoint(e: { target: { name: string } }) {
-        await SaveAndLoad.getInstance.loadUserData();
+    addPoint(e: { target: { name: string } }) {
+        SaveAndLoad.getInstance.loadUserData();
         let key = e.target.name.replace(`BtnPlus`, ``);
 
         if (PublicData.getInstance.userData[`isBattle`]) return;
@@ -79,8 +79,8 @@ export default class CharactorPage extends BaseSingletonComponent<CharactorPage>
         );
         this.UserDataLoad();
     }
-    async minusPoint(e: { target: { name: string } }) {
-        await SaveAndLoad.getInstance.loadUserData();
+    minusPoint(e: { target: { name: string } }) {
+        SaveAndLoad.getInstance.loadUserData();
         let key = e.target.name.replace(`BtnMinus`, ``);
 
         if (PublicData.getInstance.userData[`isBattle`]) return;

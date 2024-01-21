@@ -1,3 +1,4 @@
+import { warn } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import { ItemInfo } from "../DataBase/ItemInfo";
 import { PublicData } from "../DataBase/PublicData";
@@ -298,7 +299,8 @@ export class SetItemInfo extends BaseSingleton<SetItemInfo>() {
     findIndexByType(Type: string, itemType: string) {
         let array = [];
         for (let i in PublicData.getInstance.userItem[Type])
-            array.push(PublicData.getInstance.userItem[Type][i].Type);
+            if (PublicData.getInstance.userItem[Type][i].Num)
+                array.push(PublicData.getInstance.userItem[Type][i].Type);
         return array.indexOf(itemType);
     }
 }

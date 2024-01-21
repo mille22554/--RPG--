@@ -16,9 +16,9 @@ export default class Resting extends BaseSingletonComponent<Resting>() {
         this.hide();
         this.setEvent(EventEnum.Rest, this.Rest);
     }
-    async Rest() {
+    Rest() {
         if (BattlePage.instance.panelMessage.active) return;
-        await SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadUserData();
 
         if (PublicData.getInstance.userData[`isBattle`]) {
             return;
@@ -27,7 +27,7 @@ export default class Resting extends BaseSingletonComponent<Resting>() {
         if (this.node.active) {
             PublicData.getInstance.userData[`isResting`] = true;
             this.timer = setInterval(async () => {
-                await SaveAndLoad.getInstance.loadUserData();
+                SaveAndLoad.getInstance.loadUserData();
                 let HP = Number(
                         PublicData.getInstance.userData[`HP`].split(`/`)[0]
                     ),

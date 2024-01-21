@@ -223,9 +223,9 @@ export class Battle extends BaseSingleton<Battle>() {
         PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
         //#endregion
     }
-    async mobAction(target: number) {
-        await SaveAndLoad.getInstance.loadUserData();
-        await SaveAndLoad.getInstance.loadItemData();
+    mobAction(target: number) {
+        SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadItemData();
 
         PublicData.getInstance.battleData.mobSpeed[target] -= 100;
         let hp = Number(PublicData.getInstance.userData.HP.split(`/`)[0]),
@@ -235,6 +235,40 @@ export class Battle extends BaseSingleton<Battle>() {
                     2 *
                     randomRange(0.5, 1)
             );
+        //#region 短刀幸運判定
+        if (
+            PublicData.getInstance.playerEquip.rightHand.Type ==
+                EquipmentType.E0 ||
+            PublicData.getInstance.playerEquip.leftHand.Type == EquipmentType.E0
+        ) {
+            let mobHp = Number(
+                PublicData.getInstance.mobData[target].HP.split(`/`)[0]
+            );
+            mobHp = this.luckyEvent(
+                mobHp,
+                PublicData.getInstance.userData,
+                PublicData.getInstance.mobData[target],
+                Math.floor(
+                    (PublicData.getInstance.userData.Lux +
+                        PublicData.getInstance.userExtra.Lux +
+                        PublicData.getInstance.userEuqipInfo.Lux) *
+                        2 *
+                        randomRange(0.5, 1)
+                )
+            );
+            if (
+                this.deathAction(
+                    mobHp,
+                    PublicData.getInstance.mobData[target].Name,
+                    false,
+                    target
+                )
+            )
+                return;
+            PublicData.getInstance.mobData[target].HP = `${mobHp}`;
+            SaveAndLoad.getInstance.saveMobData(PublicData.getInstance.mobData);
+        }
+        //#endregion
         //#region 幸運判定
         hp = this.luckyEvent(
             hp,
@@ -244,6 +278,9 @@ export class Battle extends BaseSingleton<Battle>() {
         );
         if (this.deathAction(hp, PublicData.getInstance.userData.Name, true))
             return;
+        PublicData.getInstance.userData.HP = `${hp}/${
+            PublicData.getInstance.userData.HP.split(`/`)[1]
+        }`;
         //#endregion
         //#region 迴避判定
         if (

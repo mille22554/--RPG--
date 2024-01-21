@@ -69,7 +69,7 @@ export default class BattlePage extends BaseSingletonComponent<BattlePage>() {
             PanelLog.instance.addLog(`進入了${this.zoneName.string}`);
 
             if (PublicData.getInstance.userData.isBattle) {
-                await SaveAndLoad.getInstance.loadMobData();
+                SaveAndLoad.getInstance.loadMobData();
                 this.labelBtn1.string = `戰鬥`;
                 this.labelBtn2.string = `技能`;
                 this.labelBtn3.string = `撤退`;

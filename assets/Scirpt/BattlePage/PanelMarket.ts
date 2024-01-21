@@ -7,6 +7,7 @@ import { SaveAndLoad } from "../DataBase/SaveAndLoad";
 import ShouHin from "./ShouHin";
 import PanelBuyInfo from "./PanelBuyInfo";
 import { EventEnum } from "../Enum/EventEnum";
+import { EquipmentType } from "../Enum/EquipmentType";
 
 const { ccclass, property } = _decorator;
 @ccclass("PanelMarket")
@@ -22,7 +23,10 @@ export default class PanelMarket extends BaseSingletonComponent<PanelMarket>() {
     protected onLoad(): void {
         super.onLoad();
         NodePoolManager.getInstance.init(`souhin`, this.souhin, 1);
-        this.setEvent(EventEnum.setScrollViewHeightPM, this.setScrollViewHeight)
+        this.setEvent(
+            EventEnum.setScrollViewHeightPM,
+            this.setScrollViewHeight
+        );
     }
     protected start(): void {
         this.hide();
@@ -38,26 +42,32 @@ export default class PanelMarket extends BaseSingletonComponent<PanelMarket>() {
     openTownShop() {
         this.loadEquipmentItem();
     }
-    async loadEquipmentItem() {
+    loadEquipmentItem() {
         PanelBuyInfo.instance.hide();
         EasyCode.getInstance.putInPool(`souhin`);
-        await SaveAndLoad.getInstance.loadUserData();
-        for (let key in PublicData.getInstance.item.equipment) {
+        SaveAndLoad.getInstance.loadUserData();
+        for (let i = 0; i < 20; i++) {
             let item = EasyCode.getInstance
                 .getFromPool(`souhin`)
                 .getComponent(ShouHin);
             item.labelName.string =
-                PublicData.getInstance.item.equipment[key].Name;
-            item.labelGold.string = `$${PublicData.getInstance.item.equipment[key].Gold}`;
+                PublicData.getInstance.item.equipment[
+                    EquipmentType[`E${i}`]
+                ].Name;
+            item.labelGold.string = `$${
+                PublicData.getInstance.item.equipment[EquipmentType[`E${i}`]]
+                    .Gold
+            }`;
             item.node.parent = this.content;
             item.nowType = `E`;
-            item.info = PublicData.getInstance.item.equipment[key];
+            item.info =
+                PublicData.getInstance.item.equipment[EquipmentType[`E${i}`]];
         }
     }
-    async loadUseItem() {
+    loadUseItem() {
         PanelBuyInfo.instance.hide();
         EasyCode.getInstance.putInPool(`souhin`);
-        await SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadUserData();
         for (let key in PublicData.getInstance.item.useItem) {
             let item = EasyCode.getInstance
                 .getFromPool(`souhin`)

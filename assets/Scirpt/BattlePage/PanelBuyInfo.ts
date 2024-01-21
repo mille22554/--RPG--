@@ -36,9 +36,9 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
         super.onLoad();
         this.hide();
     }
-    async show(...any: any[]): Promise<void> {
+    show(...any: any[]) {
         super.show();
-        await SaveAndLoad.getInstance.loadItemData();
+        SaveAndLoad.getInstance.loadItemData();
         this.eventEmit(EventEnum.setScrollViewHeightPM);
     }
     hide(): void {
@@ -54,7 +54,7 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
         this.DEF.string = `物防 ${info.DEF.toString()}`;
         this.AP.string = `魔攻 ${info.AP.toString()}`;
         this.MDF.string = `魔防 ${info.MDF.toString()}`;
-        this.Speed.string = `速度 ${info.Speed.toString()}`;
+        this.Speed.string = `重量 ${info.Speed.toString()}`;
         this.Critical.string = `爆擊 ${info.Critical.toString()}`;
         this.Dodge.string = `迴避 ${info.Dodge.toString()}`;
         this.Lux.string = `幸運 ${info.Lux.toString()}`;
@@ -75,9 +75,9 @@ export default class PanelBuyInfo extends BaseSingletonComponent<PanelBuyInfo>()
         this.Lux.string = ``;
         this.Gold.string = `$ ${info.Gold.toString()}`;
     }
-    async buy() {
-        await SaveAndLoad.getInstance.loadUserData();
-        await SaveAndLoad.getInstance.loadItemData();
+    buy() {
+        SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadItemData();
         for (let type in PublicData.getInstance.item)
             for (let key in PublicData.getInstance.item[type]) {
                 if (

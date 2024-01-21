@@ -19,10 +19,10 @@ export default class PanelPlace extends BaseSingletonComponent<PanelPlace>() {
         this.hide();
         NodePoolManager.getInstance.init(`zoneItem`, this.Zone, 1);
     }
-    async show(): Promise<void> {
+    show() {
         super.show();
         EasyCode.getInstance.putInPool(`zoneItem`);
-        await SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadUserData();
         for (let i = 0; i < PublicData.getInstance.userData[`ZoneLevel`]; i++) {
             let zone = EasyCode.getInstance
                 .getFromPool(`zoneItem`)

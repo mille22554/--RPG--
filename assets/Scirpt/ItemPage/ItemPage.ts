@@ -44,11 +44,11 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
         this.type = `Equipment`;
         this.selectType(null);
     }
-    async selectType(e?) {
+    selectType(e?) {
         if (e != null) this.type = e.target.name;
         PanelMessage.instance.hide();
         this.setScrollViewHeight();
-        await SaveAndLoad.getInstance.loadItemData();
+        SaveAndLoad.getInstance.loadItemData();
         EasyCode.getInstance.putInPool(`sozai`);
         EasyCode.getInstance.putInPool(`equipment`);
         EasyCode.getInstance.putInPool(`use`);
@@ -60,7 +60,7 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                         .getComponent(Equipment);
                     item.node.parent = this.content;
                     item.info = i;
-                    item.init()
+                    item.init();
                 }
                 this.eventEmit(EventEnum.init);
                 PanelMessage.instance.nowType = `equipment`;
@@ -80,7 +80,7 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                         .getComponent(Sozai);
                     item.node.parent = this.content;
                     item.info = PublicData.getInstance.userItem.userDropItem[i];
-                    item.init()
+                    item.init();
                 }
                 PanelMessage.instance.nowType = `sozai`;
                 SaveAndLoad.getInstance.saveItemData(
@@ -97,7 +97,7 @@ export default class ItemPage extends BaseSingletonComponent<ItemPage>() {
                         .getComponent(UseItem);
                     item.node.parent = this.content;
                     item.info = PublicData.getInstance.userItem.userUseItem[i];
-                    item.init()
+                    item.init();
                 }
                 PanelMessage.instance.nowType = `use`;
                 SaveAndLoad.getInstance.saveItemData(

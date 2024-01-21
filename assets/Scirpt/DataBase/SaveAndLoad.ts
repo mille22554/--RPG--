@@ -28,7 +28,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         sys.localStorage.setItem(DataKey.userDataKey, jsonData);
         sys.localStorage.setItem(DataKey.userExtraKey, jsonExtra);
     }
-    async loadUserData() {
+    loadUserData() {
         const jsonData = sys.localStorage.getItem(DataKey.userDataKey);
         const jsonExtra = sys.localStorage.getItem(DataKey.userExtraKey);
         let userData = JSON.parse(jsonData) as UserData;
@@ -38,7 +38,7 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
             userExtra == null ? new ExtraPoint() : userExtra
         );
         if (userData == null || userExtra == null) {
-            await this.loadUserData();
+            this.loadUserData();
             return;
         }
         userData = JSON.parse(jsonData) as UserData;
@@ -54,11 +54,11 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         sys.localStorage.setItem(DataKey.mobDataKey, jsonData);
     }
     loadMobData() {
-        return new Promise<void>(async (resolve) => {
+        return new Promise<void>((resolve) => {
             const jsonData = sys.localStorage.getItem(DataKey.mobDataKey);
             let Data = JSON.parse(jsonData);
             if (Data == null) {
-                await this.loadMobData();
+                this.loadMobData();
                 return;
             }
             PublicData.getInstance.mobData = Data;

@@ -72,7 +72,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     }
     async show(...any: any[]): Promise<void> {
         super.show();
-        await SaveAndLoad.getInstance.loadItemData();
+        SaveAndLoad.getInstance.loadItemData();
         this.editbox.textLabel.string = `0`;
     }
     switchPanelMessageEquip(info: ItemInfo) {
@@ -89,7 +89,7 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.DEF.string = `物防 ${info.DEF.toString()}`;
         this.AP.string = `魔攻 ${info.AP.toString()}`;
         this.MDF.string = `魔防 ${info.MDF.toString()}`;
-        this.Speed.string = `速度 ${info.Speed.toString()}`;
+        this.Speed.string = `重量 ${info.Speed.toString()}`;
         this.Critical.string = `爆擊 ${info.Critical.toString()}`;
         this.Dodge.string = `迴避 ${info.Dodge.toString()}`;
         this.Lux.string = `幸運 ${info.Lux.toString()}`;
@@ -152,10 +152,10 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         this.btnEquip.active = true;
         this.saleNum.active = true;
     }
-    async EquipORUse() {
-        await SaveAndLoad.getInstance.loadUserData();
-        await SaveAndLoad.getInstance.loadPlayerEquipData();
-        await SaveAndLoad.getInstance.loadItemData();
+    EquipORUse() {
+        SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadPlayerEquipData();
+        SaveAndLoad.getInstance.loadItemData();
         switch (this.nowType) {
             case `equipment`:
                 this.nowItemClass =
@@ -250,9 +250,9 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             this.eventEmit(EventEnum.refreshItemPage);
         }
     }
-    async sale() {
-        await SaveAndLoad.getInstance.loadUserData();
-        await SaveAndLoad.getInstance.loadItemData();
+    sale() {
+        SaveAndLoad.getInstance.loadUserData();
+        SaveAndLoad.getInstance.loadItemData();
         if (PublicData.getInstance.userData.isField) return;
         switch (this.nowType) {
             case `equipment`:
@@ -287,17 +287,16 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     }
     saleDropItem() {
         PublicData.getInstance.userData.Gold +=
-            PublicData.getInstance.userItem.userDropItem[
-                this.nowItemClass[`info`].Type
-            ].Gold * Number(this.editbox.textLabel.string);
+            PublicData.getInstance.userItem.userDropItem[this.nowItemInfo.Type]
+                .Gold * Number(this.editbox.textLabel.string);
 
         PublicData.getInstance.userItem.userDropItem[
-            this.nowItemClass[`info`].Type
+            this.nowItemInfo.Type
         ].Num -= Number(this.editbox.textLabel.string);
 
         this.Num.string =
             this.nowItemClass.Num.string = `X${PublicData.getInstance.userItem.userDropItem[
-                this.nowItemClass[`info`].Type
+                this.nowItemInfo.Type
             ].Num.toString()}`;
 
         SaveAndLoad.getInstance.saveUserData(
@@ -310,9 +309,8 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
         );
         this.onTexting();
         if (
-            PublicData.getInstance.userItem.userDropItem[
-                this.nowItemClass[`info`].Type
-            ].Num == 0
+            PublicData.getInstance.userItem.userDropItem[this.nowItemInfo.Type]
+                .Num == 0
         ) {
             this.hide();
             this.eventEmit(EventEnum.refreshItemPage);
@@ -320,17 +318,16 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
     }
     saleUseItem() {
         PublicData.getInstance.userData.Gold +=
-            PublicData.getInstance.userItem.userUseItem[
-                this.nowItemClass[`info`].Type
-            ].Gold / 2;
+            PublicData.getInstance.userItem.userUseItem[this.nowItemInfo.Type]
+                .Gold / 2;
 
         PublicData.getInstance.userItem.userUseItem[
-            this.nowItemClass[`info`].Type
+            this.nowItemInfo.Type
         ].Num -= 1;
 
         this.Num.string =
             this.nowItemClass.Num.string = `X${PublicData.getInstance.userItem.userUseItem[
-                this.nowItemClass[`info`].Type
+                this.nowItemInfo.Type
             ].Num.toString()}`;
 
         SaveAndLoad.getInstance.saveUserData(
@@ -342,9 +339,8 @@ export default class PanelMessage extends BaseSingletonComponent<PanelMessage>()
             DataKey.UserUseItemKey
         );
         if (
-            PublicData.getInstance.userItem.userUseItem[
-                this.nowItemClass[`info`].Type
-            ].Num == 0
+            PublicData.getInstance.userItem.userUseItem[this.nowItemInfo.Type]
+                .Num == 0
         ) {
             this.hide();
             this.eventEmit(EventEnum.refreshItemPage);
