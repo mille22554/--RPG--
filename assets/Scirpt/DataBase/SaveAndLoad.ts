@@ -214,6 +214,34 @@ export class SaveAndLoad extends BaseSingleton<SaveAndLoad>() {
         PublicData.getInstance.battleData = Data;
     }
     //#endregion
+    saveAllData() {
+        this.saveUserData(
+            PublicData.getInstance.userData,
+            PublicData.getInstance.userExtra
+        );
+        this.saveMobData(PublicData.getInstance.mobData);
+        this.saveItemData(
+            PublicData.getInstance.userItem.userEquip,
+            DataKey.UserEquipKey
+        );
+        this.saveItemData(
+            PublicData.getInstance.userItem.userDropItem,
+            DataKey.UserDropItemKey
+        );
+        this.saveItemData(
+            PublicData.getInstance.userItem.userUseItem,
+            DataKey.UserUseItemKey
+        );
+        this.savePlayerEquipData(PublicData.getInstance.playerEquip);
+        this.saveBattleData(PublicData.getInstance.battleData)
+    }
+    loadAllData() {
+        this.loadUserData();
+        this.loadMobData();
+        this.loadItemData();
+        this.loadPlayerEquipData();
+        this.loadBattleData()
+    }
 }
 export enum DataKey {
     userDataKey = "userData",

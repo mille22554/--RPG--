@@ -1,18 +1,18 @@
-import { Color, randomRange, randomRangeInt, warn } from "cc";
+import { Color, randomRange, randomRangeInt } from "cc";
 import BaseSingleton from "../../Model/Singleton/BaseSingleton";
 import PanelLog from "../BattlePage/PanelLog";
 import { EquipPart } from "../DataBase/EquipPart";
 import { ItemInfo } from "../DataBase/ItemInfo";
 import { MyColor } from "../DataBase/MyColor";
 import { PublicData } from "../DataBase/PublicData";
-import { DataKey, SaveAndLoad } from "../DataBase/SaveAndLoad";
+import { SaveAndLoad } from "../DataBase/SaveAndLoad";
+import { UserData } from "../DataBase/UserData";
 import { EquipPartEnum } from "../Enum/EquipPartEnum";
 import { EquipmentType } from "../Enum/EquipmentType";
 import { EventEnum } from "../Enum/EventEnum";
+import { SetItemInfo } from "./SetItemInfo";
 import { SetMobInfo } from "./SetMobInfo";
 import { SetUserInfo } from "./SetUserInfo";
-import { UserData } from "../DataBase/UserData";
-import { SetItemInfo } from "./SetItemInfo";
 
 export class Battle extends BaseSingleton<Battle>() {
     speedTimer: number;
@@ -54,9 +54,7 @@ export class Battle extends BaseSingleton<Battle>() {
                                 Color.YELLOW
                             );
                         PublicData.getInstance.battleData.isPlayerTurn = true;
-                        SaveAndLoad.getInstance.saveBattleData(
-                            PublicData.getInstance.battleData
-                        );
+                        SaveAndLoad.getInstance.saveAllData();
                     }
                 }
             }
@@ -208,24 +206,12 @@ export class Battle extends BaseSingleton<Battle>() {
         PublicData.getInstance.mobData[target].HP = `${hp}`;
         //#endregion
         //#region 戰鬥結束存檔
-        SaveAndLoad.getInstance.saveUserData(
-            PublicData.getInstance.userData,
-            PublicData.getInstance.userExtra
-        );
-        SaveAndLoad.getInstance.saveMobData(PublicData.getInstance.mobData);
-        SaveAndLoad.getInstance.saveItemData(
-            PublicData.getInstance.userItem.userEquip,
-            DataKey.UserEquipKey
-        );
-        SaveAndLoad.getInstance.savePlayerEquipData(
-            PublicData.getInstance.playerEquip
-        );
+        SaveAndLoad.getInstance.saveAllData();
         PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
         //#endregion
     }
     mobAction(target: number) {
-        SaveAndLoad.getInstance.loadUserData();
-        SaveAndLoad.getInstance.loadItemData();
+        SaveAndLoad.getInstance.loadAllData();
 
         PublicData.getInstance.battleData.mobSpeed[target] -= 100;
         let hp = Number(PublicData.getInstance.userData.HP.split(`/`)[0]),
@@ -234,6 +220,9 @@ export class Battle extends BaseSingleton<Battle>() {
                 PublicData.getInstance.mobData[target].Lux *
                     2 *
                     randomRange(0.5, 1)
+            ),
+            mobHp = Number(
+                PublicData.getInstance.mobData[target].HP.split(`/`)[0]
             );
         //#region 短刀幸運判定
         if (
@@ -241,9 +230,6 @@ export class Battle extends BaseSingleton<Battle>() {
                 EquipmentType.E0 ||
             PublicData.getInstance.playerEquip.leftHand.Type == EquipmentType.E0
         ) {
-            let mobHp = Number(
-                PublicData.getInstance.mobData[target].HP.split(`/`)[0]
-            );
             mobHp = this.luckyEvent(
                 mobHp,
                 PublicData.getInstance.userData,
@@ -266,7 +252,7 @@ export class Battle extends BaseSingleton<Battle>() {
             )
                 return;
             PublicData.getInstance.mobData[target].HP = `${mobHp}`;
-            SaveAndLoad.getInstance.saveMobData(PublicData.getInstance.mobData);
+            SaveAndLoad.getInstance.saveAllData();
         }
         //#endregion
         //#region 幸運判定
@@ -290,6 +276,47 @@ export class Battle extends BaseSingleton<Battle>() {
             )
         )
             return;
+        //#endregion
+        //#region 盾反判定
+        if (
+            PublicData.getInstance.playerEquip.leftHand.Type == EquipmentType.E1
+        ) {
+            let dodge = 0,
+                hit = 0;
+            for (let i = 0; i < PublicData.getInstance.mobData[target].Agi; i++)
+                if (randomRangeInt(0, 2) == 0) hit++;
+            for (let i = 0; i < PublicData.getInstance.userData.Agi; i++)
+                if (randomRangeInt(0, 100) == 0) dodge++;
+            if (dodge > hit) {
+                dmg = Math.floor(
+                    ((PublicData.getInstance.userData.Str +
+                        PublicData.getInstance.userExtra.Str) *
+                        0.5 +
+                        (PublicData.getInstance.userData.Vit +
+                            PublicData.getInstance.userExtra.Vit) *
+                            0.25 +
+                        (PublicData.getInstance.userData.Agi +
+                            PublicData.getInstance.userExtra.Agi) *
+                            0.25) *
+                        randomRange(0.5, 1)
+                );
+                mobHp -= dmg;
+                PanelLog.instance.addLog(
+                    `${PublicData.getInstance.userData.Name}化解了攻擊，並趁機進行反擊，${PublicData.getInstance.mobData[target].Name}受到了${dmg}點傷害`
+                );
+                if (
+                    this.deathAction(
+                        mobHp,
+                        PublicData.getInstance.mobData[target].Name,
+                        false,
+                        target
+                    )
+                )
+                    return;
+                PublicData.getInstance.mobData[target].HP = `${mobHp}`;
+                SaveAndLoad.getInstance.saveAllData();
+            }
+        }
         //#endregion
         //#region 爆擊判定
         for (
@@ -378,17 +405,7 @@ export class Battle extends BaseSingleton<Battle>() {
         }`;
         //#endregion
         //#region 戰鬥結束存檔
-        SaveAndLoad.getInstance.saveUserData(
-            PublicData.getInstance.userData,
-            PublicData.getInstance.userExtra
-        );
-        SaveAndLoad.getInstance.saveItemData(
-            PublicData.getInstance.userItem.userEquip,
-            DataKey.UserEquipKey
-        );
-        SaveAndLoad.getInstance.savePlayerEquipData(
-            PublicData.getInstance.playerEquip
-        );
+        SaveAndLoad.getInstance.saveAllData();
         PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
         //#endregion
     }
@@ -421,11 +438,7 @@ export class Battle extends BaseSingleton<Battle>() {
                 `${hiter.Name}的攻擊，但${behiter.Name}躲開了`,
                 Color.GRAY
             );
-            SaveAndLoad.getInstance.saveUserData(
-                PublicData.getInstance.userData,
-                PublicData.getInstance.userExtra
-            );
-            SaveAndLoad.getInstance.saveMobData(PublicData.getInstance.mobData);
+            SaveAndLoad.getInstance.saveAllData();
             return true;
         }
     }
@@ -531,20 +544,7 @@ export class Battle extends BaseSingleton<Battle>() {
                             return;
                     }
                     //#endregion
-                    SaveAndLoad.getInstance.saveUserData(
-                        PublicData.getInstance.userData,
-                        PublicData.getInstance.userExtra
-                    );
-                    SaveAndLoad.getInstance.saveMobData(
-                        PublicData.getInstance.mobData
-                    );
-                    SaveAndLoad.getInstance.saveItemData(
-                        PublicData.getInstance.userItem.userEquip,
-                        DataKey.UserEquipKey
-                    );
-                    SaveAndLoad.getInstance.savePlayerEquipData(
-                        PublicData.getInstance.playerEquip
-                    );
+                    SaveAndLoad.getInstance.saveAllData();
                     PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
                     return true;
                 }
@@ -555,17 +555,7 @@ export class Battle extends BaseSingleton<Battle>() {
             clearInterval(this.speedTimer);
             PanelLog.instance.eventEmit(EventEnum.setBtnLabel);
 
-            SaveAndLoad.getInstance.saveUserData(
-                PublicData.getInstance.userData,
-                PublicData.getInstance.userExtra
-            );
-            SaveAndLoad.getInstance.saveItemData(
-                PublicData.getInstance.userItem.userEquip,
-                DataKey.UserEquipKey
-            );
-            SaveAndLoad.getInstance.savePlayerEquipData(
-                PublicData.getInstance.playerEquip
-            );
+            SaveAndLoad.getInstance.saveAllData()
             PanelLog.instance.eventEmit(EventEnum.infoLabelRefresh);
             return true;
         }
